@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#071523">
+<title>BOARD//LAB 6 — Mechanical 3D Disassembly Studio</title><link rel="stylesheet" href="mechanical/mechanical.css"></head><body>
+<header class="top"><div class="logo">BOARD<span>//</span>LAB <small>6.0 — MECHANICAL ASSEMBLY STUDIO</small></div>
+<nav><a href="index.html">Repair workbench</a><a href="digital-twin.html">Diagnose</a><a href="engineering-lab.html">Electronics</a><a href="circuit-lab.html">Circuit solver</a></nav><span class="status">DIMENSIONAL FICTIONAL MODEL</span></header>
+<main class="workspace">
+<aside class="panel left">
+<div class="eyebrow">Service training ticket</div><h1>3D laptop disassembly</h1>
+<p>Interact with a modeled chassis and inspect parts through a real three-axis projection. Parts can only be removed after their fasteners, cables and electrical isolation conditions are satisfied.</p>
+<div class="controls">
+<label>Selected component<select id="partSelect"></select></label>
+<div class="cols"><button id="removePart" class="primary">Lift selected part</button><button id="installPart">Reinstall part</button></div>
+<label>Selected fastener<select id="screwSelect"></select></label>
+<div class="cols"><button id="removeScrew">Remove screw</button><button id="installScrew">Torque screw</button></div>
+<label>Applied virtual torque (N·m)<input type="number" id="torque" value=".18" min="0" max="2" step=".01"></label>
+<label>Selected connector<select id="cableSelect"></select></label>
+<div class="cols"><button id="openLatch">Open ZIF latch</button><button id="closeLatch">Close latch</button><button id="disconnectCable">Disconnect</button><button id="connectCable">Reconnect</button></div>
+<div class="cols"><button id="unplug">Unplug adapter</button><button id="togglePower">Power on / off</button></div>
+<button id="paste">Renew virtual thermal interface</button>
+<button id="verify" class="primary">Run mechanical QA</button>
+<button id="guided">Perform next guided service action</button>
+<button id="reset">Reset training model</button>
+</div><div class="warning">Training-specific fastener torques are synthetic. Never use them as manufacturer specifications. Do not service live equipment or damaged lithium batteries.</div>
+</aside>
+<section class="panel scene">
+<div class="sceneTitle"><div><div class="eyebrow">Orthographic software 3D viewer</div><h2>Interactive exploded motherboard assembly</h2></div><span id="sceneStatus" class="status">ADAPTER DISCONNECTED</span></div>
+<canvas id="threeD" role="img" aria-label="Rotatable exploded-view 3D laptop assembly with selectable components"></canvas>
+<div class="controlstrip"><label>Rotate <input id="yaw" type="range" min="-180" max="180" value="-32"></label><label>Elevation <input id="pitch" type="range" min="10" max="82" value="43"></label><label>Zoom <input id="zoom" type="range" min="50" max="170" value="99"></label><label><input id="showExploded" type="checkbox" checked> Show lifted parts</label><label><input id="showScrews" type="checkbox" checked> Show fasteners</label><label><input id="seeThrough" type="checkbox" checked> X-ray cover</label></div>
+<div class="legend"><span><i style="background:#178b77"></i> PCB</span><span><i style="background:#ca9164"></i> Copper cooling</span><span><i style="background:#384958"></i> Battery</span><span><i style="background:#c6b18c"></i> Fastener</span></div>
+<div class="panelInset"><strong id="pickedTitle">Click a part in the model</strong><p id="pickedDesc">Drag to rotate. Use the controls to remove components, detach cables, or inspect service prerequisites.</p></div>
+</section>
+<aside class="panel right">
+<div class="eyebrow">Actual simulation state</div><h2>Disassembly / reassembly checks</h2>
+<div class="metrics"><div><strong id="countRemoved">0/7</strong><small>Parts lifted</small></div><div><strong id="countScrews">0/23</strong><small>Fasteners removed</small></div><div><strong id="countCables">0/5</strong><small>Connectors isolated</small></div><div><strong id="qaScore">100</strong><small>QA score</small></div></div>
+<div class="notice" id="safety">Adapter off · Battery connected. Access only cover screws until source is isolated.</div>
+<h3>Next safe step</h3><p id="nextStep"></p>
+<h3>Selected screw requirement</h3><div class="notice" id="screwSpec">Choose a fastener to see its training torque.</div>
+<h3>Required final checks</h3><div id="qaIssues" class="log"></div>
+<h3>Action history</h3><div id="events" class="log"></div>
+<button id="exportHistory" class="primary">Export full service record (JSON)</button>
+</aside>
+</main>
+<script src="mechanical/assembly-core.js"></script><script src="mechanical/mechanical-ui.js"></script>
+</body></html>
