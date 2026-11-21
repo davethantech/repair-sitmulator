@@ -48,7 +48,7 @@ function inspect(s){
 const reasons=[],liquidus=ALLOYS[s.alloy].liquidusC;
 if(!s.removed||!s.replaced)reasons.push("Component removal and replacement incomplete");
 if(s.padLifted)reasons.push("Pad adhesion damaged");
-if(s.padHealth<70)reasons.push("Heat damage risk");
+if(s.padHealth<70||s.overheatSec>2)reasons.push("Excess heat exposure or pad-damage risk");
 if(s.jointLiquidusSec<.5)reasons.push("Replacement joint has insufficient modeled soldering dwell");
 if(s.padTempC>90)reasons.push("Board has not cooled for safe inspection");
 if(s.bridge)reasons.push("Solder bridge remains");
