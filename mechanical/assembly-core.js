@@ -115,7 +115,7 @@ function install(s,id){
  const part=by(PARTS,id);if(!part||!part.removable)return fail(s,"install",id,"Not a removable teaching part");
  const e=safe(s,"install",id);if(e)return e;
  if(!has(s.removed,id))return fail(s,"install",id,"Part already installed");
- if(id!=="cover"&&has(s.removed,"board"))return fail(s,"install",id,"Install motherboard before child components");
+ if(id!=="cover"&&id!=="board"&&has(s.removed,"board"))return fail(s,"install",id,"Install motherboard before child components");
  if(id==="cover"){
   if(PARTS.some(p=>p.removable&&p.id!=="cover"&&has(s.removed,p.id)))return fail(s,"install",id,"All internal parts must be seated before closing cover");
   if(SCREWS.filter(x=>x.part!=="cover").some(x=>has(s.screwsRemoved,x.id)))return fail(s,"install",id,"Secure internal screws first");
