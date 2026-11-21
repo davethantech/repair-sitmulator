@@ -1,17 +1,17 @@
 /* BOARD//LAB 5 engineering workshop controller. Browser-only; real controls and deterministic modules. */
 (function(){
 "use strict";
-const P=window.BoardPCB,F=window.BoardFactory,M=window.BoardMCU,S=window.BoardSignals,R=window.BoardRework;
+const P=window.BoardPCB,F=window.BoardFactory,M=window.BoardMCU,S=window.BoardSignals,R=window.BoardRework,A=window.BoardAssessment;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=(n,d=2)=>Number(n).toFixed(d);
 const dl=(name,text,type="text/plain")=>{const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),700);};
 const bind=(id,event,fn)=>$(id).addEventListener(event,fn);
-let board=P.routedExample(),dfm=null,panel=null,mcu=null,signal=null,rework=null,completed=new Set();
+let board=P.routedExample(),dfm=null,panel=null,mcu=null,signal=null,rework=null,examRecords=[];
 function tab(name){
 document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("chosen",x.dataset.tab===name));
 document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("open",x.id==="tab"+name[0].toUpperCase()+name.slice(1)));
-const pages={factory:["CAM, ASSEMBLY & RELEASE","Virtual electronics manufacturing plant","Review training PCB copper, mounting, documentation and manufacturing gates."],embedded:["VIRTUAL MCU & BUS LAB","Firmware meets real circuit behavior","Write safe ISA commands and inspect power, GPIO, PWM, ADC, I²C and UART results."],signals:["TRANSMISSION LINE LAB","Signal integrity and termination","Derive propagation delay and reflections from a lossless-line model, then compare waveforms."],rework:["THERMAL REWORK & INSPECTION","Virtual microsoldering and microscope QA","Track component temperature, solder dwell, cooling and potential damage; avoid unsafe powered work."]};
+const pages={factory:["CAM, ASSEMBLY & RELEASE","Virtual electronics manufacturing plant","Review training PCB copper, mounting, documentation and manufacturing gates."],embedded:["VIRTUAL MCU & BUS LAB","Firmware meets real circuit behavior","Write safe ISA commands and inspect power, GPIO, PWM, ADC, I²C and UART results."],signals:["TRANSMISSION LINE LAB","Signal integrity and termination","Derive propagation delay and reflections from a lossless-line model, then compare waveforms."],rework:["THERMAL REWORK & INSPECTION","Virtual microsoldering and microscope QA","Track component temperature, solder dwell, cooling and potential damage; avoid unsafe powered work."],assessment:["PRACTICAL EXAMINATIONS","Demonstrate measured engineering skills","Objective practice rubrics evaluate actual electrical, fabrication, firmware, signal and thermal state."]};
 const [ey,title,desc]=pages[name];$("currentStep").textContent=ey;$("pageTitle").textContent=title;$("pageSubtitle").textContent=desc;
 }
 const finite=(id)=>{let n=Number($(id).value);if(!Number.isFinite(n))throw Error("Enter a valid number for "+id);return n;};
@@ -117,6 +117,37 @@ if(type==="bridge")result=R.bridge(rework);
 if(type==="inspect")result=R.inspect(rework);
 renderRework(type==="inspect"?(result.passed?"TRAINING QA PASS, score "+result.score+"/100. Physical inspection still mandatory.":"TRAINING QA FAILED: "+result.reasons.join("; ")):result.message||(type+" completed; check pad and action history."));
 }
+
+function initExams(){
+try{const records=JSON.parse(localStorage.getItem("boardlab.practice.v5")||"[]");if(Array.isArray(records))examRecords=records.slice(-200);}catch{examRecords=[];}
+$("examCase").innerHTML=Object.entries(A.TASKS).map(([id,t])=>'<option value="'+esc(id)+'">'+esc(t.title)+'</option>').join("");
+bind("examCase","change",renderExam);
+bind("examOpen","click",()=>tab(A.TASKS[$("examCase").value].module));
+bind("examGrade","click",()=>safe(()=>{
+const id=$("examCase").value,grade=A.grade(id,{factory:dfm,mcu,signal,rework,inspection:rework?R.inspect(rework):null});
+const record={...grade,attemptedAt:new Date().toISOString(),release:"BOARDLAB 5 teaching model"};
+examRecords.push(record);examRecords=examRecords.slice(-200);
+try{localStorage.setItem("boardlab.practice.v5",JSON.stringify(examRecords));}catch{}
+renderExam();$("examNotice").textContent=record.passed?"TRAINING PASS: objective simulation requirements satisfied. Not a professional credential.":"TRAINING INCOMPLETE: review the failed checks and return to the required lab.";
+},"examNotice"));
+bind("examExport","click",()=>safe(()=>dl("BOARDLAB_v5_practice_results.json",JSON.stringify(A.report(examRecords),null,2),"application/json"),"examNotice"));
+bind("examClear","click",()=>{examRecords=[];try{localStorage.removeItem("boardlab.practice.v5");}catch{}renderExam();});
+renderExam();
+}
+function renderExam(){
+const id=$("examCase").value,task=A.TASKS[id];if(!task)return;
+const record=examRecords.filter(g=>g.id===id).slice(-1)[0],check=record?.results||task.checks.map(([label,_,points])=>({label,points,achieved:0,passed:false}));
+$("examBrief").textContent=task.brief;
+$("examTitle").textContent=task.title;
+$("examResult").textContent=record?(record.passed?"PRACTICE PASS":"RETRY NEEDED"):"NOT ASSESSED";
+$("examScore").textContent=record?record.score+"/100":"—";
+$("examPassed").textContent=record?(record.passed?"YES":"NO"):"—";
+$("examAttempts").textContent=examRecords.length;
+$("examTotal").textContent=Object.keys(A.TASKS).length;
+$("examChecks").innerHTML=check.map(c=>'<div class="stage"><b>'+(c.passed?"✓ ":"○ ")+esc(c.label)+'</b><p>'+c.achieved+'/'+c.points+' points</p></div>').join("");
+$("examHistory").innerHTML=examRecords.slice(-25).reverse().map(g=>'<div class="issue '+(g.passed?"":"review")+'"><small>'+esc(g.attemptedAt||"")+'</small>'+esc(g.title)+' — '+g.score+'/100 ('+(g.passed?"Pass":"Retry")+')</div>').join("")||'<p>No practice assessments recorded on this browser.</p>';
+}
+
 function init(){
 document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>tab(btn.dataset.tab)));
 document.querySelectorAll("[data-export]").forEach(btn=>btn.addEventListener("click",()=>safe(()=>exportFactory(btn.dataset.export),"pageSubtitle")));
@@ -132,7 +163,7 @@ bind("sigOpen","click",()=>{$("sigRs").value=50;$("sigZ").value=50;$("sigRl").va
 bind("sigExport","click",()=>safe(()=>{if(!signal)drawSignal();dl("transmission-line-training.csv","time_ns,volts\n"+signal.points.map(p=>p.tNs+","+p.v).join("\n")+"\n","text/csv");},"sigWarnings"));
 bind("rwReset","click",()=>safe(resetRework,"rwMessage"));for(const [id,type] of [["rwHeat","heat"],["rwCool","cool"],["rwFlux","flux"],["rwRemove","remove"],["rwPlace","place"],["rwClean","clean"],["rwBridgeAction","bridge"],["rwInspect","inspect"]])bind(id,"click",()=>safe(()=>actRework(type),"rwMessage"));
 $("mcuSource").value=M.TEMPLATES.blink;
-drawFactory();compileMcu();drawSignal();resetRework();tab("factory");
+drawFactory();compileMcu();drawSignal();resetRework();initExams();tab("factory");
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
