@@ -4,7 +4,7 @@
  */
 (()=>{
 "use strict";
-const M=window.BoardMNA,P=window.BoardPCB,E=window.BoardERC,Spice=window.BoardMNASpice,$=id=>document.getElementById(id);
+const M=window.BoardMNA,P=window.BoardPCB,E=window.BoardERC,Spice=window.BoardMNASpice,Cal=window.BoardCalibration,$=id=>document.getElementById(id);
 if(!M||!P||!E){document.body.textContent="Missing circuit or PCB solver modules";return;}
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=(v,d=5)=>Number(v).toPrecision(d);
@@ -110,6 +110,16 @@ document.querySelectorAll("[data-mode]").forEach(x=>x.addEventListener("click",(
 $("loadExample").addEventListener("click",example);$("example").addEventListener("change",example);
 $("runDc").addEventListener("click",calculateDC);$("runTransient").addEventListener("click",calculateTransient);$("traceNode").addEventListener("change",drawWave);
 $("exportSpice").addEventListener("click",()=>{try{const c=parseModel();const analysis=transient?"tran":"op",deck=Spice.build(c,{analysis,stepS:Number($("dt").value),durationS:Number($("duration").value)});download("BOARDLAB_unverified_"+analysis+".cir",deck,"text/plain");info("Exported an inspectable native ngspice deck. Numerical results and vendor models require external verification.");}catch(e){info(e.message,false);}});
+$("exampleGolden").addEventListener("click",()=>{try{const circuit=parseModel(),fixture=Cal.syntheticFixture(circuit,"transient");download("BOARDLAB_SYNTHETIC_REFERENCE_NOT_BENCH_DATA.json",JSON.stringify(fixture,null,2),"application/json");$("goldenStatus").textContent="Synthetic fixture generated for solver regression only. It is not calibrated data.";}catch(e){$("goldenStatus").textContent=e.message;}});
+$("compareGolden").addEventListener("click",async()=>{
+ const file=$("goldenFile").files?.[0];if(!file){$("goldenStatus").textContent="Choose a JSON reference dataset with explicit provenance.";return;}
+ if(file.size>150000){$("goldenStatus").textContent="Dataset exceeds 150 kB upload safety limit.";return;}
+ try{
+  const source=JSON.parse(await file.text()),result=Cal.compare(source);
+  const badge=result.passed?"NUMERICAL PASS":"NUMERICAL FAIL";
+  $("goldenStatus").textContent=badge+" — "+result.failed+"/"+result.observations+" measurements outside tolerance; maximum absolute error "+result.maxAbsErrorV.toFixed(5)+" V; RMSE "+result.rmseV.toFixed(5)+" V. "+result.referenceType+". Manufacturer-qualified: NO. Physical calibration certified: NO.";
+ }catch(e){$("goldenStatus").textContent="Calibration comparison error: "+e.message;}
+});
 $("exportSpec").addEventListener("click",()=>{try{const data=parseModel();download("BOARDLAB_circuit_experiment.json",JSON.stringify(data,null,2),"application/json");}catch(e){info(e.message,false);}});
 $("exportWave").addEventListener("click",()=>{if(!transient)return info("Calculate a transient waveform first",false);const node=$("traceNode").value;download("BOARDLAB_transient_"+node+".csv","time_s,voltage_v\n"+transient.points.map(p=>p.timeS+","+(p.nodes[node]??0)).join("\n")+"\n","text/csv");});
 $("loadPcb").addEventListener("click",loadBoard);$("ercTemplate").addEventListener("change",loadBoard);$("ercRun").addEventListener("click",runERC);
