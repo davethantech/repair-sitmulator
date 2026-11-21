@@ -1,0 +1,79 @@
+{
+  "schema": "boardlab.golden.v1",
+  "analysis": "transient",
+  "circuit": {
+    "title": "RC low-pass 5V step",
+    "components": [
+      {
+        "id": "V1",
+        "type": "V",
+        "p": "IN",
+        "n": "0",
+        "value": {
+          "step": [
+            0,
+            0,
+            5
+          ]
+        }
+      },
+      {
+        "id": "R1",
+        "type": "R",
+        "p": "IN",
+        "n": "OUT",
+        "value": 1000
+      },
+      {
+        "id": "C1",
+        "type": "C",
+        "p": "OUT",
+        "n": "0",
+        "value": 0.000001
+      }
+    ]
+  },
+  "options": {
+    "stepS": 0.00001,
+    "durationS": 0.005
+  },
+  "provenance": {
+    "kind": "synthetic",
+    "source": "BOARDLAB generated regression fixture (not bench data)"
+  },
+  "tolerance": {
+    "absV": 0.03,
+    "relative": 0.005
+  },
+  "probes": [
+    {
+      "node": "OUT",
+      "samples": [
+        {
+          "tS": 0.0001,
+          "volts": 0.47356522653508354
+        },
+        {
+          "tS": 0.0005,
+          "volts": 1.9598058765552524
+        },
+        {
+          "tS": 0.001,
+          "volts": 3.151443938354405
+        },
+        {
+          "tS": 0.002,
+          "volts": 4.316568097390665
+        },
+        {
+          "tS": 0.003,
+          "volts": 4.74732756274191
+        },
+        {
+          "tS": 0.005,
+          "volts": 4.965463119093544
+        }
+      ]
+    }
+  ]
+}
