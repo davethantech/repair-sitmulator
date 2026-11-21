@@ -33,6 +33,21 @@ const external=await fetch(base+"/api/progress",{method:"POST",headers:{"Content
 const invalid=await fetch(base+"/api/progress",{method:"POST",headers:{"Content-Type":"text/plain","Cookie":studentCookie},body:"{}"});assert.equal(invalid.status,415);
 const staticHTML=await fetch(base+"/engineering-lab.html");assert.equal(staticHTML.status,200);assert.match(await staticHTML.text(),/PCB FACTORY/);
 const traversal=await fetch(base+"/.boardlab-data/records.json");assert.equal(traversal.status,404);
+
+const tasks=await request("/api/lab-tasks","GET",undefined,"student");
+assert.equal(tasks.status,200);assert.ok(tasks.json.tasks.some(x=>x.id==="divider"));
+const circuit=require("../simulation/mna-core.js").EXAMPLES.divider;
+x=await request("/api/lab-submissions","POST",{task:"divider",score:999,payload:{circuit}},"student");
+assert.equal(x.status,201);assert.equal(x.json.submission.score,100);
+assert.equal(x.json.submission.accredited,false);
+x=await request("/api/lab-submissions","POST",{task:"divider",payload:{circuit:{components:[]}}},"student");
+assert.equal(x.status,400);
+x=await request("/api/lab-submissions","GET",undefined,"student");
+assert.equal(x.json.submissions.length,1);
+assert.equal((await request("/api/lab-submissions","GET")).status,401);
+x=await request("/api/summary","GET",undefined,"admin");
+assert.equal(x.json.objectiveSubmissionCount,1);
+assert.equal(x.json.learners[0].objectiveLabPasses,1);
 assert.ok(fs.existsSync(path.join(temp,"records.json")));
 x=await request("/api/logout","POST",{},"student");assert.equal(x.status,200);
 assert.equal((await request("/api/me","GET",undefined,"student")).status,401);
