@@ -10,7 +10,7 @@ const numeric=x=>Number(x).toExponential(9);
 const node=x=>x==="GND"||x==="gnd"?"0":x;
 function sourceValue(v){
  if(typeof v==="number")return"DC "+numeric(v);
- if(v&&Array.isArray(v.step)){const [t,a,b]=v.step;return"DC "+numeric(a)+" PWL(0 "+numeric(a)+" "+numeric(Math.max(0,t))+" "+numeric(a)+" "+numeric(Math.max(0,t)+1e-9)+" "+numeric(b)+")";}
+ if(v&&Array.isArray(v.step)){const [t,a,b]=v.step;return"DC "+numeric(a)+" PWL(0 "+numeric(a)+(t>0?" "+numeric(t)+" "+numeric(a):"")+" "+numeric(Math.max(0,t)+1e-9)+" "+numeric(b)+")";}
  if(v&&Array.isArray(v.pulse)){const [lo,hi,delay,period,width]=v.pulse;return"DC "+numeric(lo)+" PULSE("+[lo,hi,delay,1e-10,1e-10,width,period].map(numeric).join(" ")+")";}
  throw Error("Unsupported source waveform");
 }
