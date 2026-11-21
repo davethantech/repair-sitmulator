@@ -1,0 +1,40 @@
+"use strict";
+const assert=require("node:assert/strict");
+const G=require("../classroom/grader-core.js");
+const M=require("../simulation/mna-core.js"),P=require("../pcb-core.js"),E=require("../cad/erc-core.js"),U=require("../embedded-core.js"),A=require("../mechanical/assembly-core.js");
+function grade(task,payload){const r=G.grade(task,payload);assert.equal(r.passed,true,task+" should be supported and pass");assert.equal(r.score,r.outOf);return r;}
+grade("divider",{circuit:M.EXAMPLES.divider});grade("rc",{circuit:M.EXAMPLES.rc});grade("diode",{circuit:M.EXAMPLES.diode});grade("mosfet",{circuit:M.EXAMPLES.nmos});
+const b=P.routedExample();grade("erc",{board:b,schematic:E.schematicFromPCB(b)});
+grade("factory_route",{board:b});grade("factory_guard",{board:P.getTemplate("usb")});
+grade("mcu_blink",{source:U.TEMPLATES.blink,options:{}});
+grade("mcu_nack",{source:U.TEMPLATES.sensor,options:{fault:"i2c_nack"}});
+grade("mcu_brownout",{source:U.TEMPLATES.blink,options:{fault:"brownout"}});
+grade("signal_match",{parameters:{sourceOhm:50,impedanceOhm:50,loadOhm:50}});
+grade("signal_unmatched",{parameters:{sourceOhm:0,impedanceOhm:50,loadOhm:100}});
+const heat={airC:310,airflow:.7,distanceMm:4},actions=[];
+for(let i=0;i<15;i++)actions.push({action:"heat",params:heat,seconds:1});
+actions.push({action:"remove"},{action:"place"});
+for(let i=0;i<10;i++)actions.push({action:"heat",params:heat,seconds:1});
+actions.push({action:"cool",seconds:60});
+grade("rework_repair",{options:{},actions});
+grade("rework_contamination",{options:{corrosion:true,bridge:true},actions:[{action:"clean"},{action:"bridge"}]});
+const ops=[];
+const act=(action,id,extra={})=>ops.push({action,id,...extra});
+for(const x of A.SCREWS.filter(x=>x.part==="cover"))act("loosen",x.id);
+act("remove","cover");act("cable","BAT",{disconnect:true});
+for(const x of A.CABLES.filter(x=>x.id!=="BAT")){act("latch",x.id,{open:true});act("cable",x.id,{disconnect:true});}
+for(const x of A.SCREWS.filter(x=>x.part!=="cover"))act("loosen",x.id);
+for(const id of ["fan","heatsink","ssd","ram","battery","board"])act("remove",id);
+act("install","board");act("paste","paste");
+for(const id of ["battery","ram","ssd","heatsink","fan"])act("install",id);
+for(const x of A.SCREWS.filter(x=>x.part!=="cover"))act("tighten",x.id,{torque:x.torqueNm});
+for(const x of A.CABLES.filter(x=>x.id!=="BAT")){act("cable",x.id,{disconnect:false});act("latch",x.id,{open:false});}
+act("cable","BAT",{disconnect:false});act("install","cover");
+for(const x of A.SCREWS.filter(x=>x.part==="cover"))act("tighten",x.id,{torque:x.torqueNm});
+grade("assembly",{actions:ops});
+assert.equal(G.grade("assembly",{actions:[]}).passed,false,"Initial assembled state is not evidence of service");
+const invalid=JSON.parse(JSON.stringify(M.EXAMPLES.divider));invalid.components[1].value=2000;
+assert.equal(G.grade("divider",{circuit:invalid}).passed,false);
+assert.throws(()=>G.grade("unknown",{}),/Unsupported/);
+assert.throws(()=>G.grade("assembly",{actions:[{action:"setScore",score:100}]}),/Unsupported assembly/);
+console.log("PASS v6: 15 server-recomputed practical tasks, no trusted client grades, full mechanical action replay");
