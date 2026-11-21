@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08131e"><title>BOARD//LAB — Interactive Laptop & Motherboard Repair Simulator</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<div id="app" class="app">
+ <header class="topbar">
+  <div class="brand"><span class="brand-symbol">◈</span><div><div class="wordmark">BOARD<span>//</span>LAB <span class="lab-pill">SIM</span></div><div class="tiny muted">PROFESSIONAL HARDWARE TRAINING ENVIRONMENT</div></div></div>
+  <div class="top-tabs" role="tablist" aria-label="Simulation modules">
+   <button class="top-tab active" data-tab="lab">◈ <span>3D WORKBENCH</span></button><button class="top-tab" data-tab="disassembly">▣ <span>DISASSEMBLY</span></button><button class="top-tab" data-tab="schematic">⌁ <span>CIRCUIT VIEW</span></button><button class="top-tab" data-tab="solder">✳ <span>MICROSOLDER</span></button><button class="top-tab" data-tab="academy">▥ <span>ACADEMY</span></button><button class="top-tab" data-tab="advanced">◉ <span>ADVANCED LAB</span></button><button class="top-tab" data-tab="pcb" id="pcbNav">⌬ <span>PCB DESIGN</span></button>
+  </div>
+  <div class="top-right"><div class="online-mark"><i></i> OFFLINE ENGINE</div><button class="icon-button" id="helpBtn" title="About this simulator" aria-label="About simulator">?</button></div>
+ </header>
+ <div class="workspace">
+  <aside class="sidebar left">
+   <div class="section-label">TRAINING CONSOLE <span class="label-chip">FL-01</span></div>
+   <div class="hero-image"><div class="image-shade"><span class="case-eyebrow">VIRTUAL SERVICE BAY / 01</span><strong>Precision starts<br>with evidence.</strong></div></div>
+   <div class="case-head"><span class="small-label">ACTIVE REPAIR TICKET</span><span id="caseNum" class="case-num">#00</span></div>
+   <select id="caseSelect" class="select" aria-label="Choose repair case"></select>
+   <p class="complaint" id="complaint"></p>
+   <div class="fault-status"><span class="status-dot" id="statusDot"></span><div><span class="tiny muted">SYSTEM STATE</span><strong id="powerStage">INITIALIZING</strong></div><span id="statusMini" class="status-min">—</span></div>
+   <div class="separator"></div>
+   <div class="section-label">HARDWARE CONTROLS</div>
+   <div class="toggle-row"><span><span class="control-title">Adapter input</span><small>Fictional 19.2 V supply</small></span><button id="acBtn" class="switch is-on" role="switch" aria-checked="true"><i></i></button></div>
+   <div class="toggle-row"><span><span class="control-title">Internal battery</span><small>Isolated for training</small></span><button id="batteryBtn" class="switch" role="switch" aria-checked="false"><i></i></button></div>
+   <button id="powerBtn" class="wide action-primary"><span>⏻</span> PRESS POWER BUTTON</button>
+   <div class="separator"></div>
+   <div class="section-label">INTERACTION TOOL</div>
+   <div class="tool-grid" id="toolGrid"><button class="tool active" data-tool="inspect">◎<span>INSPECT</span></button><button class="tool" data-tool="red">●<span>RED PROBE</span></button><button class="tool" data-tool="black">●<span>BLACK PROBE</span></button><button class="tool" data-tool="remove">⛭<span>REMOVE</span></button></div>
+   <div class="help-note" id="toolHint">Rotate the board by dragging. Click a component to inspect. Use the mouse wheel to zoom.</div>
+   <div class="separator"></div>
+   <div class="section-label">REPAIR PROTOCOL</div>
+   <div class="step-list" id="steps"><div class="step"><span>01</span>Inspect complaint &amp; board</div><div class="step"><span>02</span>Measure power rails</div><div class="step"><span>03</span>Confirm root cause</div><div class="step"><span>04</span>Repair &amp; retest</div></div>
+  </aside>
+  <main class="main" id="main">
+   <div class="stage-head"><div><div class="eyebrow">INTERACTIVE REPAIR WORKSTATION <span class="dot-sep">•</span> FICTIONAL TRAINING BOARD</div><h1 id="stageTitle">Motherboard inspection</h1><p class="stage-sub" id="stageSubtitle">Orbit • zoom • select • diagnose</p></div><div class="stage-actions"><button id="topViewBtn" class="ghost-btn">↗ TOP VIEW</button><button id="explodeBtn" class="ghost-btn">⊞ EXPLODE</button><button id="resetViewBtn" class="ghost-btn">↺ RESET</button></div></div>
+   <div class="viewport-panel" id="viewPanel">
+    <div id="view3d" class="view-slot"><canvas id="boardCanvas" aria-label="Interactive 3D training motherboard"></canvas><div class="viewport-topline"><div class="frame-tag"><span class="ping"></span> LIVE TRAINER / FICT-FL01</div><span>WEBGL · 3D MESH</span></div><div class="axis-marker">X <span>↗</span> Y / ORBIT ENABLED</div><div id="labels3d" class="labels3d"></div></div>
+    <div id="viewSchematic" class="view-slot hidden"><div class="schematic-header">POWER TOPOLOGY <span>DC-INPUT → SYSTEM → STANDBY → CPU</span></div><svg id="schematicSvg" viewBox="0 0 900 480" preserveAspectRatio="xMidYMid meet" aria-label="Interactive rail schematic"></svg><div class="schematic-footer">Select any test pad in the diagram to connect the active probe. Rail numbers are simulated training values, not OEM specifications.</div></div>
+    <div id="viewSolder" class="view-slot hidden"><div class="solder-top"><div><span class="eyebrow">MICROSCOPE WORKSTATION</span><h3 id="solderHeading">Solder bridge inspection</h3></div><select id="solderCase" class="select small"><option value="bridge">Bridge removal</option><option value="replace">SMD replacement</option><option value="corrosion">Corrosion cleanup</option></select></div><canvas id="solderCanvas" width="900" height="455" aria-label="Interactive PCB rework practice"></canvas><div class="solder-bottom">TRAINING VIEW — illustration-based 2D rework mechanics, not calibrated thermal physics</div></div>
+    <div id="viewAcademy" class="view-slot hidden"><div class="academy-hero"><div><span class="eyebrow">TRAINING PATH / LEVELS 01—05</span><h2>From component basics<br>to board-level diagnosis.</h2><p>Practical exercises are linked to the same circuit simulator used at the workbench.</p></div><div class="academy-stat"><strong id="completedCount">0/10</strong><small>DIAGNOSTIC CASES PASSED</small></div></div><div id="academyCards" class="academy-cards"></div></div>
+    <div id="viewAdvanced" class="view-slot hidden" aria-label="Advanced labs and training modules"></div>
+    <div id="noWebGL" class="webgl-note hidden">WebGL unavailable. Use the circuit view for test-point diagnosis.</div>
+    <div id="componentPopover" class="component-popover hidden"><button id="closeComponent" class="pop-close" aria-label="Close details">×</button><span class="small-label" id="compType">COMPONENT DETAIL</span><div class="comp-name" id="compName">—</div><div class="comp-info" id="compInfo"></div><button id="backupFirmwareBtn" class="small-action hidden" style="margin-bottom:7px">READ &amp; VERIFY SPI BACKUP</button><button id="repairBtn" class="small-action">REPAIR SELECTED COMPONENT ↗</button></div>
+   </div>
+   <div id="stageFooter" class="stage-footer"><div class="status-block"><span>SCENARIO</span><strong id="stageCase">REFERENCE BOARD</strong></div><div class="status-block"><span>PROBES</span><strong id="probesStatus">BLACK — / RED —</strong></div><div class="status-block"><span>RESULT</span><strong id="postStatus">SYSTEM OFF</strong></div><div class="status-block hide-mobile"><span>COMPUTED INPUT DRAW</span><strong id="currentStatus">0.00 A</strong></div></div>
+   <div id="belowPanel" class="below-grid"><div class="info-card"><div class="section-label">SELECTED HARDWARE</div><strong id="selectedTitle">Click a component or test pad</strong><p id="selectedDescription">Inspect function and diagnostic relevance; then move your meter probes to named points.</p></div><div class="info-card"><div class="section-label">TECHNICIAN'S NOTES</div><p id="scenarioHint">Measure before you diagnose. Compare voltage at the adapter jack, fuse output, system power rail, and standby regulators.</p><button id="hintBtn" class="inline-link">REQUEST A HINT →</button></div></div>
+  </main>
+  <aside class="sidebar right">
+   <div class="section-label">DIAGNOSTIC INSTRUMENTS <span class="label-chip">LIVE</span></div>
+   <div class="meter"><div class="meter-head"><span>◈ BOARD//LAB</span><span>DMM–401</span></div><div class="meter-display"><div class="meter-line"><span id="meterModeLabel">DC VOLTAGE</span><span id="meterLive">AUTO</span></div><div id="meterReadout" class="meter-reading">— — —</div><div id="meterDetail" class="meter-detail">Place red and black probes on board test points.</div></div><div class="meter-mode" id="meterModes"><button class="active" data-mode="DCV">V⎓</button><button data-mode="ACV">V~</button><button data-mode="OHM">Ω</button><button data-mode="CONT">)))</button><button data-mode="DIODE">⇥</button></div><div class="probe-ports"><span><i class="port-black"></i> COM</span><span><i class="port-red"></i> V Ω</span></div></div>
+   <div class="probe-selector"><div class="section-label">PROBE ROUTING</div><div class="probe-fields"><label>BLACK / COM<select id="blackSelect" class="select mini"></select></label><label>RED / VΩ<select id="redSelect" class="select mini"></select></label></div><div class="tiny muted">You can also click gold test pads in 3D or circuit view.</div></div>
+   <div class="separator"></div>
+   <div class="section-label">POWER SEQUENCE ANALYZER</div>
+   <div class="rails" id="rails"></div>
+   <div class="separator"></div>
+   <div class="section-label">FAULT IDENTIFICATION</div>
+   <p class="tiny muted">Select your root-cause hypothesis. The answer stays hidden until submission.</p>
+   <select id="diagnosisSelect" class="select"><option value="">Choose suspected component...</option></select><button id="diagnoseBtn" class="wide outline-action">SUBMIT DIAGNOSIS</button><button id="verifyRepairBtn" class="wide outline-action" style="margin-top:7px">RUN POST-REPAIR QA ✓</button><div id="diagnosisFeedback" class="diagnosis-feedback hidden"></div>
+   <div class="separator"></div>
+   <div class="section-label">SIMULATION LOG <button id="clearLog" class="log-clear">CLEAR</button></div><div id="eventLog" class="event-log"></div>
+  </aside>
+ </div>
+
+ <section class="pcb-studio hidden" id="pcbStudio" aria-label="PCB design and layout training studio">
+  <div class="pcb-project-head">
+    <div><div class="eyebrow">ELECTRONIC DESIGN AUTOMATION • TRAINING STUDIO 03</div><h2>PCB Design Studio <span class="pcb-version">v3.0</span></h2><p>Requirements → netlist → footprints → placement → routing → DRC → KiCad review</p></div>
+    <div class="pcb-header-actions"><select id="pcbTemplate" aria-label="Choose training design"><option value="led">01 · 5V LED indicator</option><option value="regulator">02 · 3.3V sensor supply</option><option value="usb">03 · USB-C sink concept</option><option value="blank">04 · Blank project</option><option value="routed">05 · Fully routed reference</option></select><button id="pcbLoadTemplate">LOAD PROJECT</button><button id="pcbSave" class="pcb-action-hot">SAVE .JSON ↓</button></div>
+  </div>
+  <div class="pcb-layout">
+   <aside class="pcb-side pcb-left">
+    <div class="section-label">LIBRARY / FOOTPRINTS <span class="label-chip">11</span></div>
+    <div class="pcb-search"><input id="pcbSearchPart" placeholder="Filter components" aria-label="Filter PCB component library"></div>
+    <div id="pcbPalette" class="pcb-palette"></div>
+    <div class="pcb-quiet">Choose a footprint, then click the board to place it. All footprints are training geometry and require production verification.</div>
+    <div class="pcb-divider"></div>
+    <div class="section-label">EDITOR TOOL</div><div class="pcb-tools" id="pcbTools"><button data-pcb-tool="select" class="active">↖ Select / move</button><button data-pcb-tool="route">⌁ Route trace</button><button data-pcb-tool="via">◎ Place via</button><button data-pcb-tool="delete">✕ Delete</button></div>
+    <div class="pcb-form-grid"><label>Active copper layer<select id="pcbActiveLayer"><option value="F.Cu">F.Cu · top</option><option value="B.Cu">B.Cu · bottom</option></select></label><label>Trace width (mm)<input id="pcbTraceWidth" type="number" min="0.1" max="5" step="0.05" value="0.4"></label><label>Grid (mm)<select id="pcbGrid"><option value="0.5">0.5</option><option value="1">1.0</option><option value="0.25">0.25</option><option value="0.1">0.1</option></select></label><label>Active net<select id="pcbActiveNet"></select></label></div>
+    <div class="pcb-actions-vert"><button id="pcbCancelRoute">CANCEL ROUTE / ESC</button><button id="pcbUndo">↶ UNDO</button><button id="pcbRedo">↷ REDO</button></div>
+   </aside>
+   <main class="pcb-main">
+    <nav class="pcb-subtabs" aria-label="PCB studio views"><button class="active" data-pcb-view="layout">01 · BOARD LAYOUT</button><button data-pcb-view="schematic">02 · SCHEMATIC / NETLIST</button><button data-pcb-view="stackup">03 · STACKUP / SI</button><button data-pcb-view="learning">04 · COURSES</button><button data-pcb-view="release">05 · RELEASE REVIEW</button></nav>
+    <div class="pcb-view pcb-board-pane" id="pcbLayoutPane"><div class="pcb-canvas-toolbar"><div class="pcb-led"></div><span id="pcbBoardName">5V LED safety indicator</span><span id="pcbBoardHint">Click a pad to start routing; click another pad on the same net to finish</span><button id="pcbRatsnest" class="pcb-toggle-on">RATSNEST</button><button id="pcbLayerTop" class="pcb-toggle-on">TOP</button><button id="pcbLayerBottom" class="pcb-toggle-on">BOTTOM</button><button id="pcbPerspective">ISOMETRIC</button><button id="pcbResetView">FIT</button></div><div class="pcb-canvas-wrap" id="pcbCanvasWrap"><svg id="pcbBoardSvg" viewBox="-5 -5 94 64" role="img" aria-label="Interactive circuit board layout"></svg><div class="pcb-coordinate" id="pcbCoord">X: — • Y: — mm</div></div><div class="pcb-stage-lower"><span id="pcbSelectedNetSummary">NET: —</span><span id="pcbRouteStatus">READY</span><span id="pcbDrcSmall">RUN DESIGN RULES</span></div></div>
+    <div class="pcb-view hidden pcb-schematic-pane" id="pcbSchematicPane"><div class="pcb-view-title">Functional schematic / editable netlist <span>Click a pin or component to inspect and change nets</span></div><div class="pcb-schematic-scroll"><svg id="pcbSchematicSvg" role="img" aria-label="Schematic connectivity overview"></svg></div><div class="pcb-note">This is a functional connectivity diagram, not an ERC-complete electrical schematic editor. Pin types, power flags, symbol models and exact device pinouts must be verified in KiCad.</div></div>
+    <div class="pcb-view hidden pcb-stack-pane" id="pcbStackPane"></div>
+    <div class="pcb-view hidden pcb-learning-pane" id="pcbLearningPane"></div>
+    <div class="pcb-view hidden pcb-release-pane" id="pcbReleasePane"></div>
+   </main>
+   <aside class="pcb-side pcb-right">
+    <div class="section-label">DESIGN INSPECTOR <span class="label-chip">MM</span></div>
+    <div class="pcb-inspector-card" id="pcbPropertyPanel">Choose a component, pad or route to inspect it.</div>
+    <div class="pcb-divider"></div>
+    <div class="section-label">DESIGN RULE CHECK <span class="label-chip">LIVE</span></div>
+    <div class="pcb-drc-summary" id="pcbDrcSummary"></div>
+    <button id="pcbRunDRC" class="pcb-primary">RUN DRC + NET CONNECTIVITY</button>
+    <div id="pcbIssues" class="pcb-issues"></div>
+    <div class="pcb-divider"></div>
+    <div class="section-label">FABRICATION READINESS</div><p class="pcb-quiet">Built-in checks are instructional, not a substitute for KiCad DRC, ERC, footprint validation, stackup review, signal-integrity analysis or manufacturer signoff.</p>
+   </aside>
+  </div>
+  <div class="pcb-footer"><span>BOARD//LAB PCB STUDIO • TWO-LAYER GEOMETRIC EDITOR / FOUR-LAYER STACKUP CONCEPTS</span><span id="pcbFooterMetrics">0 tracks · 0 vias</span><span>NOT A FABRICATION RELEASE SYSTEM</span></div>
+ </section>
+ <footer class="bottom"><span>BOARD//LAB 2.1 • VIRTUAL ELECTRONICS TRAINING LAB</span><span>3D rendering + circuit engines + optional local classroom server <span class="muted">|</span> No real device connections</span><button id="exportBtn">EXPORT DIAGNOSTIC REPORT ↓</button></footer>
+ <div id="toast" role="status" class="toast hidden"></div>
+ <div id="modalBackdrop" class="modal-backdrop hidden"><div class="modal"><button id="closeModal" class="pop-close">×</button><span class="eyebrow">ABOUT THIS TRAINING PROTOTYPE</span><h2>Real interaction. Controlled educational models.</h2><p>This application contains procedural 3D laptop repair, advanced 2D boardview, 36 laptop and 11 desktop training cases, computed meter readings, virtual reassembly, digital oscilloscope, thermal visualization, USB-C analysis, isolated bench supply, mock SPI tool, advanced rework exercises, electronics MNA lab, practice examinations and work-order records. An optional Node classroom server supports user accounts and assignments.</p><p><strong>Scope:</strong> The fictional FL-01 trainer is not a reverse-engineered ASUS motherboard. The motherboard rail model uses deterministic power dependencies and fault behavior, not full transistor-level SPICE. A separate linear MNA solver powers the low-voltage electronics lesson. The 3D model is procedural and stylized, not a licensed OEM CAD model. Oscilloscope timing, thermal camera and rework mechanics are teaching approximations, not calibrated instrumentation or manufacturing specifications.</p><p><strong>Safety:</strong> Do not use fictional trainer readings, rework temperatures, or PSU values to repair real hardware. Follow the exact board schematic, manufacturer documentation, battery procedures and proper technician training.</p><button id="modalDone" class="wide action-primary">UNDERSTOOD</button></div></div>
+</div>
+<script src="core.js"></script><script src="advanced-core.js"></script><script src="circuit-solver.js"></script><script src="desktop-core.js"></script><script src="renderer.js"></script><script src="app.js"></script><script src="labplus.js"></script><script src="pcb-core.js"></script><script src="pcb-studio.js"></script>
+</body></html>
