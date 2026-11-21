@@ -1,0 +1,27 @@
+"use strict";
+const assert=require("node:assert/strict"),vm=require("node:vm"),fs=require("node:fs"),path=require("node:path");
+const P=require("../pcb-core.js"),F=require("../factory-core.js"),M=require("../embedded-core.js"),S=require("../signal-core.js"),R=require("../rework-core.js");
+const elements=new Map();
+const initial={boardPick:"routed",minDrill:".2",assemblyMargin:".25",panelCols:"2",panelRows:"2",panelGap:"3",panelRail:"8",programPick:"blink",mcuFault:"none",mcuSupply:"3.3",mcuAdc:"1.65",mcuTemp:"25",sigZ:"50",sigRs:"0",sigRl:"100",sigLength:"100",sigEr:"2.9",sigRise:".2",sigProbe:"load",rwPart:"capacitor_0805",rwAlloy:"SAC305",rwAir:"310",rwFlow:".7",rwDistance:"4",rwSeconds:"5"};
+const el=id=>({id,value:initial[id]||"",textContent:"",innerHTML:"",checked:false,style:{},dataset:{},classList:{toggle(){}},listeners:{},addEventListener(evt,fn){this.listeners[evt]=fn;},setAttribute(){},remove(){},click(){this.listeners.click?.();}});
+const doc={readyState:"complete",body:{appendChild(){}},getElementById(id){if(!elements.has(id))elements.set(id,el(id));return elements.get(id);},querySelectorAll(){return[];},createElement(tag){return el(tag);},addEventListener(){}};
+const context={document:doc,window:{BoardPCB:P,BoardFactory:F,BoardMCU:M,BoardSignals:S,BoardRework:R},localStorage:{getItem(){return null;}},URL:{createObjectURL(){return"blob:test";},revokeObjectURL(){}},Blob,setTimeout(){},console};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname,"..","engineering-ui.js"),"utf8"),context,{filename:"engineering-ui.js",timeout:3000});
+function html(id){return String(doc.getElementById(id).innerHTML);}
+function click(id){const x=doc.getElementById(id);assert.ok(x.listeners.click,"Missing click listener: "+id);x.click();}
+assert.ok(html("factorySvg").includes("GND")||html("factorySvg").includes("polyline"));
+assert.ok(html("factoryStages").includes("Schematic"));
+assert.ok(html("signalSvg").includes("polyline")||html("signalSvg").includes("<path"));
+assert.ok(html("mcuRegisters").includes("R0"));
+assert.ok(html("rwChecklist").includes("Component removal"));
+assert.equal(doc.getElementById("dfmErrors").textContent,0);
+click("runMcu");
+assert.match(doc.getElementById("mcuUart").textContent,/Blink completed/);
+assert.equal(doc.getElementById("mcuCycles").textContent,31);
+click("rwHeat");assert.ok(Number(doc.getElementById("rwPad").textContent)>25);
+click("rwCool");assert.ok(Number(doc.getElementById("rwPad").textContent)<150);
+click("sigMatched");assert.equal(doc.getElementById("sigOver").textContent,"0.000");
+click("sigOpen");assert.ok(Number(doc.getElementById("sigGamma").textContent)>.99);
+doc.getElementById("boardPick").value="usb";doc.getElementById("boardPick").listeners.change();
+assert.ok(Number(doc.getElementById("dfmErrors").textContent)>=1,"Abstract footprints should block manufacturing");
+console.log("PASS v5: engineering UI renders and run/heat/signal/DFM actions produce state changes");
