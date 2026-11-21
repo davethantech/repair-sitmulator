@@ -7,6 +7,7 @@
 - A lossless transmission-line calculator with source/load reflection coefficients and animated-ready waveform samples (TDR/receiver). It cannot validate realistic high-speed channels.
 - A simplified lumped-temperature rework practice model with flux, thermal stress, liquidus dwell, component replacement, bridge/corrosion inspection and score. NOT real solder profile guidance.
 - A new responsive engineering-lab.html workbench connecting all four engines, exporting results and accepting real controls rather than placeholders.
+- A nine-case practical exam module grading actual low-voltage engine state, net coverage, firmware traces, signal reflections and thermal inspection. Local unproctored practice only.
 - A local-only Node classroom server supporting admin setup, user creation, instructor assignment, login/logout, self-reported practice scores, progress and permission checks. This is not a secure production cloud LMS.
 - Deterministic unit, model, browser-interface smoke and classroom API tests wired into GitHub Actions. Sample engineering exports are in examples/v5.
 
