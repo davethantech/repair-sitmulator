@@ -108,4 +108,4 @@ function grade(task,payload){
  const score=checklist.reduce((n,x)=>n+x.achieved,0),maxScore=checklist.reduce((n,x)=>n+x.points,0);
  return{task,score,outOf:maxScore,passed:score>=.85*maxScore,checks:checklist,model,assessmentType:"server-recomputed unproctored educational practical",manufacturerQualified:false,accredited:false};
 }
-return{TASKS,grade};
+module.exports={TASKS,grade};
