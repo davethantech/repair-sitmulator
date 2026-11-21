@@ -95,7 +95,7 @@ if(expected.part!==part||expected.tool!==tool){s.mistakes++;addEvidence(s,"repai
 s.fixed=true;s.repairCount++;s.verified=false;
 if(s.scenario==="trace_open"){s.board=PCB.routedExample();}
 addEvidence(s,"repair",part+" corrected with "+tool);return{ok:true,message:"Virtual repair completed. Re-energize and verify operating conditions."};}
-function verify(s){const r=snapshot(s),p=r.pcb;const ok=s.fixed&&s.sourceOn&&p.errors===0&&p.warnings===0&&r.ledOn&&r.volts.VCC_PROTECTED>4.5&&!r.currentLimited;
+function verify(s){const r=snapshot(s),p=r.pcb;const ok=(s.fixed||s.scenario==="healthy")&&s.sourceOn&&p.errors===0&&p.warnings===0&&r.ledOn&&r.volts.VCC_PROTECTED>4.5&&!r.currentLimited;
 s.verified=ok;addEvidence(s,"QA",ok?"pass":"incomplete");return{ok,message:ok?"QA PASS — expected LED operation and rail behavior restored.":"QA incomplete: check fault, power, routing, and measurements.",score:Math.max(0,100-s.mistakes*15-(s.evidence.length<3?10:0)-(s.repairCount>1?10:0))};}
 function oscilloscope(s,node){const r=snapshot(s),a=pinName[node]||node,dc=r.volts[a]||0;
 return Array.from({length:128},(_,i)=>{let t=i/127*5;return{t_ms:t,v:s.sourceOn?dc*(1-Math.exp(-t/.25))+(.008*Math.sin(2*Math.PI*t*3))*(dc>1?1:0):0};});}
