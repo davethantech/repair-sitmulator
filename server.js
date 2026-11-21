@@ -3,15 +3,16 @@
    NOT a production internet-facing LMS, exam proctor, or certification authority. */
 "use strict";
 const http=require("node:http"),fs=require("node:fs"),path=require("node:path"),crypto=require("node:crypto");
-const C=require("./advanced-core.js");
+const C=require("./advanced-core.js"),G=require("./classroom/grader-core.js");
 const root=__dirname;
 const HOST=process.env.HOST||"127.0.0.1",PORT=Number(process.env.PORT||8714);
 const dataDir=path.resolve(process.env.BOARDLAB_DATA_DIR||path.join(root,".boardlab-data"));
 fs.mkdirSync(dataDir,{recursive:true,mode:0o700});
 const store=path.join(dataDir,"records.json");
-let db={version:1,users:[],assignments:[],attempts:[],progress:{}};
+let db={version:2,users:[],assignments:[],attempts:[],labSubmissions:[],progress:{}};
 try{const loaded=JSON.parse(fs.readFileSync(store,"utf8"));if(!Array.isArray(loaded.users)||!Array.isArray(loaded.assignments)||!Array.isArray(loaded.attempts)||!loaded.progress||typeof loaded.progress!=="object")throw Error("Invalid classroom database");db=loaded;}
 catch(e){if(e.code!=="ENOENT")throw e;}
+if(!Array.isArray(db.labSubmissions))db.labSubmissions=[];db.version=2;
 const sessions=new Map(),failures=new Map(),uuid=()=>crypto.randomBytes(16).toString("hex"),now=()=>new Date().toISOString();
 function persist(){const temp=store+".tmp-"+process.pid;fs.writeFileSync(temp,JSON.stringify(db,null,2),{encoding:"utf8",mode:0o600,flag:"wx"});fs.renameSync(temp,store);}
 function passwordHash(p,salt=crypto.randomBytes(16).toString("hex")){return salt+":"+crypto.scryptSync(p,salt,64).toString("hex");}
@@ -36,7 +37,7 @@ if(!data||typeof data!=="object"||Array.isArray(data))throw Object.assign(Error(
 }
 async function api(req,res,url){
 const route=url.pathname,method=req.method;
-if(method==="GET"&&route==="/api/status")return send(res,200,{ok:true,configured:db.users.some(x=>x.role==="admin"),version:C.VERSION,features:["users","assignments","attempts","progress","unproctored-practice"]});
+if(method==="GET"&&route==="/api/status")return send(res,200,{ok:true,configured:db.users.some(x=>x.role==="admin"),version:C.VERSION,features:["users","assignments","attempts","progress","unproctored-practice","server-recomputed-practicals"]});
 if(!["GET","POST"].includes(method))return fail(res,405,"Unsupported method");
 if(method==="POST"&&!sameOrigin(req))return fail(res,403,"Cross-origin request blocked");
 if(method==="POST"&&route==="/api/setup"){
@@ -69,6 +70,23 @@ const student=db.users.find(x=>x.id===b.studentId&&x.role==="student"),c=C.FAULT
 if(!student||!c)return fail(res,400,"Unknown student or case");
 const a={id:uuid(),studentId:student.id,studentName:student.displayName,instructorId:user.id,caseId:c.id,caseLabel:c.label,created:now(),dueDate:/^\d{4}-\d{2}-\d{2}$/.test(b.dueDate||"")?b.dueDate:null,status:"assigned"};db.assignments.push(a);persist();return send(res,201,{ok:true,assignment:a});
 }
+if(method==="GET"&&route==="/api/lab-tasks")return send(res,200,{ok:true,tasks:G.TASKS,grading:"server recomputed, educational and unproctored"});
+if(method==="GET"&&route==="/api/lab-submissions"){
+ const all=requireRole(user,["admin","instructor"]);
+ return send(res,200,{ok:true,submissions:all?db.labSubmissions.slice(-1500):db.labSubmissions.filter(x=>x.studentId===user.id).slice(-200)});
+}
+if(method==="POST"&&route==="/api/lab-submissions"){
+ const b=await parseBody(req),p=b.payload||{};
+ if(typeof b.task!=="string"||b.task.length>50)return fail(res,400,"Valid laboratory task required");
+ if(p.circuit&&(!Array.isArray(p.circuit.components)||p.circuit.components.length>30))return fail(res,400,"Maximum 30 components per graded circuit");
+ if(p.board&&(!Array.isArray(p.board.parts)||p.board.parts.length>70||p.board.tracks?.length>250))return fail(res,400,"Graded PCB size limit exceeded");
+ if(db.labSubmissions.length>=8000)return fail(res,507,"Local practice storage full; export and archive instructor records");
+ let grade;
+ try{grade=G.grade(b.task,p);}catch(e){return fail(res,400,"Validation error: "+String(e.message||"Invalid practical").slice(0,200));}
+ const submission={id:uuid(),studentId:user.id,studentName:user.displayName,taskId:b.task,created:now(),score:grade.score,outOf:grade.outOf,passed:grade.passed,checks:grade.checks,model:grade.model,grading:grade.assessmentType,accredited:false};
+ db.labSubmissions.push(submission);persist();
+ return send(res,201,{ok:true,submission});
+}
 if(method==="GET"&&route==="/api/attempts")return send(res,200,{ok:true,attempts:requireRole(user,["admin","instructor"])?db.attempts:db.attempts.filter(x=>x.studentId===user.id)});
 if(method==="POST"&&route==="/api/attempts"){
 const b=await parseBody(req),c=C.FAULTS.find(x=>x.id===b.caseId&&x.target);if(!c)return fail(res,400,"Known fault case required");
@@ -80,8 +98,8 @@ const a=db.assignments.findLast(x=>x.studentId===user.id&&x.caseId===c.id);if(a)
 }
 if(method==="GET"&&route==="/api/summary"){
 if(!requireRole(user,["admin","instructor"]))return fail(res,403,"Instructor permission required");
-const learners=db.users.filter(x=>x.role==="student").map(u=>{const attempts=db.attempts.filter(a=>a.studentId===u.id);return{...publicUser(u),attempts:attempts.length,bestScore:attempts.length?Math.max(...attempts.map(x=>x.score)):0,completedAssignments:db.assignments.filter(a=>a.studentId===u.id&&a.status==="completed").length};});
-return send(res,200,{ok:true,learners,assignmentCount:db.assignments.length,attemptCount:db.attempts.length});
+const learners=db.users.filter(x=>x.role==="student").map(u=>{const attempts=db.attempts.filter(a=>a.studentId===u.id);return{...publicUser(u),attempts:attempts.length,bestScore:attempts.length?Math.max(...attempts.map(x=>x.score)):0,completedAssignments:db.assignments.filter(a=>a.studentId===u.id&&a.status==="completed").length,objectiveLabs:db.labSubmissions.filter(x=>x.studentId===u.id).length,objectiveLabPasses:db.labSubmissions.filter(x=>x.studentId===u.id&&x.passed).length};});
+return send(res,200,{ok:true,learners,assignmentCount:db.assignments.length,attemptCount:db.attempts.length,objectiveSubmissionCount:db.labSubmissions.length});
 }
 if(method==="POST"&&route==="/api/progress"){
 const b=await parseBody(req),p={completed:Array.isArray(b.completed)?b.completed.filter(x=>Number.isInteger(x)&&x>=0&&x<C.FAULTS.length).slice(0,100):[],quiz:Array.isArray(b.quiz)?b.quiz.filter(x=>Number.isInteger(x)&&x>=0&&x<5):[],assemblyPasses:Math.min(10000,Math.max(0,Math.floor(Number(b.assemblyPasses)||0))),date:now(),grading:"self-reported training activity"};
