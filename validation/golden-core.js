@@ -57,7 +57,7 @@ function compare(raw){
   warning:"A numerical fit does not prove component model validity, data authenticity, electrical safety, or fabrication readiness. Independent calibrated laboratory review required."};
 }
 function syntheticFixture(circuit=M.EXAMPLES.rc,analysis="transient"){
- const clean=JSON.parse(JSON.stringify(circuit)),sample;
+ const clean=JSON.parse(JSON.stringify(circuit));let sample;
  if(analysis==="op"){const x=M.solveDC(clean);sample=[{node:"OUT",samples:[{tS:0,volts:x.nodes.OUT}]}];}
  else {
   const t=M.simulateTransient(clean,{stepS:1e-5,durationS:.005});
