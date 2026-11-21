@@ -14,6 +14,9 @@
 <div class="flexRow"><button id="exportSpec">Save circuit JSON</button><button id="exportWave">Save transient CSV</button><button id="exportSpice">Export ngspice deck</button></div>
 <label>Time step (seconds)<input id="dt" type="number" value=".00001" min=".000000001" step=".00001"></label>
 <label>Duration (seconds)<input id="duration" type="number" value=".005" min=".000000001" step=".001"></label>
+<h3>Reference measurement comparison</h3><label>Load a reference dataset (JSON)<input id="goldenFile" type="file" accept=".json,application/json"></label>
+<div class="flexRow"><button id="compareGolden">Compare measured vs simulated</button><button id="exampleGolden">Download synthetic reference</button></div>
+<div class="noteBox" id="goldenStatus">No measured dataset is provided by BOARD//LAB. Synthetic regression traces cannot establish physical calibration.</div>
 <div class="exportHint">No external code executes from the editor: inputs are parsed and validated as bounded JSON. A failed/singular/non-converging circuit reports an error instead of invented measurements. Transient method: fixed-step backward Euler.</div>
 </aside>
 <article class="labp"><div class="eyebrow">Pin-connected model visualization</div><h2 id="circuitTitle">Resistive divider</h2><div class="schematicPane"><svg id="circuitSvg" viewBox="0 0 940 400" role="img" aria-label="Interactive circuit net graph"></svg></div>
@@ -44,5 +47,5 @@
 </article><aside class="labp"><div class="eyebrow">Electrical & manufacturer rule findings</div><h2>ERC results</h2><div class="scroll" id="ercIssues"></div>
 <h3>Fabrication decision</h3><div class="noticeBad noteBox">RELEASE LOCKED. Passing this lesson does not replace a real schematic, exact supplier pinout, KiCad ERC/DRC and fabricator review.</div></aside></section>
 </main>
-<script src="simulation/mna-core.js"></script><script src="pcb-core.js"></script><script src="cad/erc-core.js"></script><script src="simulation/export-spice.js"></script><script src="circuit-lab.js"></script>
+<script src="simulation/mna-core.js"></script><script src="pcb-core.js"></script><script src="cad/erc-core.js"></script><script src="simulation/export-spice.js"></script><script src="validation/golden-core.js"></script><script src="circuit-lab.js"></script>
 </body></html>
