@@ -1,3 +1,24 @@
+# BOARD//LAB 6 verification status — 21 November 2026
+
+## Newly implemented since v5
+
+- General compact nonlinear DC + time-domain MNA circuit solver (R/L/C, independent sources, exponential diode and approximate NMOS/PMOS), with bounded numerical integration and explicit singular/nonconvergence failures.
+- Editable circuit workbench with circuit graph, calculated node and branch observations, waveform plots, custom JSON projects and restricted native ngspice deck export.
+- Independent ngspice GitHub Actions job, installed from the Ubuntu package, ran successfully on the RC example. This proves native circuit deck execution, not vendor semiconductor calibration.
+- Fictional 355 x 245 mm mechanical 3D model with real three-axis software rendering, 7 removable assemblies, 23 fasteners, 5 cable connectors, battery isolation, latches, heat-interface renewal, torque training checks, and a complete guided disassembly/reassembly path.
+- Schematic electrical checker for reference numbers, pin declarations, net/pad mismatches, output conflicts, unpowered input warnings and unverified conceptual footprint blocking.
+- Server-side practical grading with circuit, PCB, firmware, SI, rework and mechanical trace replay, storing independently recomputed unproctored scores in the local classroom API.
+- Provenance-aware named reference dataset comparator, with per-point tolerance checks and RMSE; ships a SYNTHETIC example only (no real physical board measurements supplied).
+- CI tests for all new pure engines, interface state changes, classroom authorization, SPICE serialization, physical action constraints and calibration failures.
+
+**Product status:** A broad, runnable educational training platform with reproducible numerical engineering examples. It remains **NOT** an OEM-authorized, electrically calibrated, manufacturer-approved, independently penetration-tested or accredited product.
+
+**Production qualification blockers:** licensed manufacturer boardviews/mechanical CAD and service procedures; real bench measurements and instrumentation calibration records; device vendor electrical models; PCB stackup/footprint/fabricator DFM approvals; independently validated thermal/BGA and high-speed data; managed cloud identity and privacy review; and professional accreditation. Model code cannot create or certify those external facts.
+
+See [V6_PHYSICS_AND_VALIDATION.md](V6_PHYSICS_AND_VALIDATION.md) for a detailed numerical and acceptance explanation. Successful CI and native SPICE execution do not mean OEM hardware certification.
+
+---
+
 # BOARD//LAB 5 verification update (2026-11-21)
 
 **V5 implemented and testable in the repository:**
