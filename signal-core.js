@@ -33,7 +33,7 @@ const r=calculate(params);const n=number(count,"samples",20,1200);if(!Number.isI
 const duration=Math.max(6*r.oneWayNs+2*r.riseNs,4);
 const points=Array.from({length:n},(_,i)=>{const tNs=duration*i/(n-1);return{tNs:Number(tNs.toFixed(4)),v:Number(voltageAt(tNs,r,end).toFixed(6))};});
 const peak=Math.max(...points.map(p=>p.v)),valley=Math.min(...points.map(p=>p.v));
-const steady=r.loadReflection===1?0:r.loadReflection===-1?0:r.stepV*(r.Rl/(r.Rs+r.Rl));
+const steady=r.Rl==="OPEN"?r.stepV:r.Rl===0?0:r.stepV*(r.Rl/(r.Rs+r.Rl));
 const overshoot=peak-Math.max(steady,0);
 const warnings=[];
 if(r.lengthMm>500&&r.riseNs<r.oneWayNs)warnings.push("Propagation delay exceeds edge time: route and termination deserve careful attention.");
