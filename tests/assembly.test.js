@@ -1,0 +1,55 @@
+"use strict";
+const assert=require("node:assert/strict");
+const A=require("../mechanical/assembly-core.js");
+const s=A.make();
+assert.equal(A.CHASSIS.width,355);
+assert.equal(A.PARTS.filter(p=>p.removable).length,7);
+assert.equal(A.SCREWS.length,23);
+assert.equal(A.CABLES.length,5);
+assert.equal(A.verify(s).ok,true);
+assert.equal(A.adapter(s,true).ok,true);
+assert.equal(A.loosen(s,"C1").ok,false,"Cannot service with adapter connected");
+assert.equal(A.adapter(s,false).ok,true);
+assert.equal(A.remove(s,"cover").ok,false,"Fasteners required");
+for(const screw of A.SCREWS.filter(x=>x.part==="cover"))assert.equal(A.loosen(s,screw.id).ok,true);
+assert.equal(A.remove(s,"cover").ok,true);
+assert.equal(A.latch(s,"DISP",true).ok,false,"Battery still attached");
+assert.equal(A.cable(s,"BAT",true).ok,true);
+for(const cable of A.CABLES.filter(x=>x.id!=="BAT")){
+ assert.equal(A.cable(s,cable.id,true).ok,false,"Latch must open");
+ assert.equal(A.latch(s,cable.id,true).ok,true);
+ assert.equal(A.cable(s,cable.id,true).ok,true);
+}
+assert.equal(A.remove(s,"board").ok,false);
+for(const screw of A.SCREWS.filter(x=>x.part!=="cover"))assert.equal(A.loosen(s,screw.id).ok,true,screw.id);
+assert.equal(A.remove(s,"heatsink").ok,false,"Fan dependency");
+for(const id of ["fan","heatsink","ssd","ram","battery","board"])assert.equal(A.remove(s,id).ok,true,id);
+assert.equal(s.thermalSealBroken,true);
+assert.equal(A.verify(s).ok,false);
+assert.equal(A.install(s,"heatsink").ok,false,"Board dependency");
+assert.equal(A.install(s,"board").ok,true);
+assert.equal(A.install(s,"heatsink").ok,false,"Thermal interface needs renewal");
+assert.equal(A.paste(s).ok,true);
+for(const id of ["battery","ram","ssd","heatsink","fan"])assert.equal(A.install(s,id).ok,true,id);
+const screw=A.SCREWS.find(x=>x.id==="M1");
+assert.equal(A.tighten(s,screw.id,.01).ok,false,"Low torque rejected");
+for(const x of A.SCREWS.filter(x=>x.part!=="cover"))assert.equal(A.tighten(s,x.id,x.torqueNm).ok,true,x.id);
+for(const cable of A.CABLES.filter(x=>x.id!=="BAT")){
+ assert.equal(A.cable(s,cable.id,false).ok,true);
+ assert.equal(A.latch(s,cable.id,false).ok,true);
+}
+assert.equal(A.cable(s,"BAT",false).ok,true);
+assert.equal(A.install(s,"cover").ok,true);
+for(const x of A.SCREWS.filter(x=>x.part==="cover"))assert.equal(A.tighten(s,x.id,x.torqueNm).ok,true);
+assert.deepEqual(A.verify(s).reasons,[]);
+assert.equal(A.power(s,true).ok,true);
+assert.equal(A.loosen(s,"C1").ok,false,"Powered rework blocked");
+assert.equal(A.power(s,false).ok,true);
+assert.equal(A.visible(s).filter(x=>x.removed).length,0);
+assert.ok(s.log.length>70);
+const over=A.make();
+assert.equal(A.loosen(over,"C1").ok,true);
+assert.equal(A.tighten(over,"C1",1.2).ok,false);
+assert.ok(over.damage.length>0);
+assert.equal(A.power(over,true).ok,false);
+console.log("PASS v6: dimensional assembly graph, 23 screws, battery isolation, ZIF, thermal, guided-reassembly QA and torque damage");
