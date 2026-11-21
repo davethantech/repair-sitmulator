@@ -1,3 +1,23 @@
+# BOARD//LAB 5 verification update (2026-11-21)
+
+**V5 implemented and testable in the repository:**
+
+- A PCB DFM/assembly training engine driven by existing BOARD//LAB pad/trace geometry, with BOM, placement centroid, hole inventory and array-panel planning. Conceptual USB-C/SOT training parts block or flag manufacturing review.
+- An editable deterministic virtual CPU language with registers, conditional branches, GPIO, PWM, ADC, modeled I2C sensor and UART. Brownout, sensor NACK and open LED are repeatable training faults; NOT an MCU/ARM/RISC-V emulator.
+- A lossless transmission-line calculator with source/load reflection coefficients and animated-ready waveform samples (TDR/receiver). It cannot validate realistic high-speed channels.
+- A simplified lumped-temperature rework practice model with flux, thermal stress, liquidus dwell, component replacement, bridge/corrosion inspection and score. NOT real solder profile guidance.
+- A new responsive engineering-lab.html workbench connecting all four engines, exporting results and accepting real controls rather than placeholders.
+- A local-only Node classroom server supporting admin setup, user creation, instructor assignment, login/logout, self-reported practice scores, progress and permission checks. This is not a secure production cloud LMS.
+- Deterministic unit, model, browser-interface smoke and classroom API tests wired into GitHub Actions. Sample engineering exports are in examples/v5.
+
+**Explicitly NOT finished**: full transistor-level SPICE, vendor-calibrated firmware/EC/VRM/OEM power rails, mechanical CAD-fidelity 3D disassembly, real heat/wetting-based microsoldering physics, fabrication-grade schematic/GERBER/CAM, production high-speed channel simulation, native chip emulation, generative AI tutoring, multi-tenant audited cloud LMS, or accredited qualifications. These require supplier documentation, licensed assets, native engineering tools, physical validation and a much larger engineering program.
+
+**Acceptance rule:** No training DRC pass, educational waveform, heat score, or classroom grade is a manufacturer-approved engineering, physical safety, fabrication or professional certification signoff.
+
+Read V5_ENGINEERING_WORKSHOP.md for practical exercises and reproducible tests.
+
+---
+
 # BOARD//LAB — engineering status, validation & future build plan
 
 Release basis: original BOARD//LAB 3.0 imported from the provided release, plus an integrated 5 V design-to-repair training lab.
