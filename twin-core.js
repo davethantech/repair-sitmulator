@@ -53,7 +53,7 @@ const links=[
 }
 function evaluate(s,setpoint=5,currentLimit=.8){
 let supply=setpoint,V=null,branch=null,diodeOn=true,I=0;
-function run(level){let active=diodeOn,x=null,parts=null;for(let k=0;k<8;k++){parts=network(s,level,active);x=solveResistors(parts.links);let next=x.LED_A>1.9+1e-7&&faultOf(s)!=="led_open"&&faultOf(s)!=="return_open"&&!netOpen(s.board,"GND");if(next===active)break;active=next;}return{v:x,p:parts,on:active};}
+function run(level){const forbidden=faultOf(s)==="led_open"||faultOf(s)==="return_open"||netOpen(s.board,"GND");let parts=network(s,level,false),off=solveResistors(parts.links),active=!forbidden&&off.LED_A>1.9; if(!active)return{v:off,p:parts,on:false};parts=network(s,level,true);let on=solveResistors(parts.links);if(on.LED_A<1.9-1e-8){parts=network(s,level,false);return{v:solveResistors(parts.links),p:parts,on:false};}return{v:on,p:parts,on:true};}
 let z=run(supply);I=Math.max(0,(supply-z.v.VIN_5V)/z.p.rs);
 if(I>currentLimit){let lo=0,hi=supply;for(let j=0;j<42;j++){let m=(lo+hi)/2,q=run(m);let current=Math.max(0,(m-q.v.VIN_5V)/q.p.rs);if(current>currentLimit)hi=m;else lo=m;}supply=lo;z=run(supply);I=Math.max(0,(supply-z.v.VIN_5V)/z.p.rs);}
 const ledCurrent=z.on?Math.max(0,(z.v.LED_A-1.9)/12):0;
