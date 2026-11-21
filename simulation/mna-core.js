@@ -171,23 +171,23 @@ function nonlinear(ctx,options={},initial){
   const scale=Math.max(1,...Array.from(next,Math.abs));
   if(!Number.isFinite(diff))throw Error("Nonlinear solver diverged");
   if(diff<1e-8+scale*1e-8){x=next;return{x,iterations,converged:true};}
-  let alpha=diff>1?.4:1;
-  if(k>10&&diff>last*1.2)alpha=.15;
+  let alpha=diff>.5?.5/diff:1;
+  if(k>10&&diff>last*1.2)alpha=Math.min(alpha,.2);
   if(alpha<1)relaxed=true;
   for(let i=0;i<next.length;i++)next[i]=x[i]+alpha*(next[i]-x[i]);
   last=diff;x=next;
  }
  throw Error("Nonlinear solver did not converge within "+itMax+" iterations; change timestep or circuit topology");
 }
-function result(ctx,answer,t){
+function result(ctx,answer,t,dt=0){
  const nodes={"0":0};for(const n of ctx.c.nodes)nodes[n]=voltage(ctx,answer.x,n);
  const current={};for(const id of ctx.c.sources)current[id]=answer.x[ctx.curr.get(id)];
  const branch={};
  for(const c of ctx.c.components){
   const v=voltagePair(ctx,answer.x,c.p,c.n);
   if(c.type==="R")branch[c.id]=v/c.value;
-  if(c.type==="C")branch[c.id]=0;
-  if(c.type==="L")branch[c.id]=ctx.oldI.get(c.id)||0;
+  if(c.type==="C")branch[c.id]=dt>0?c.value/dt*(v-(ctx.oldV.get(c.id)||0)):0;
+  if(c.type==="L")branch[c.id]=dt>0?(ctx.oldI.get(c.id)||0)+dt/c.value*v:1e9*v;
   if(c.type==="D")branch[c.id]=diode(c,v).I;
   if(c.type==="NMOS"||c.type==="PMOS")branch[c.id]=mosCurrent(c,voltage(ctx,answer.x,c.p),voltage(ctx,answer.x,c.g),voltage(ctx,answer.x,c.n));
   if(c.type==="V")branch[c.id]=current[c.id];
@@ -212,6 +212,7 @@ function simulateTransient(raw,{stepS=1e-5,durationS=.005,initialVoltages={},max
   const t=Math.min(duration,k*dt),h=t-prevTime;
   const ans=nonlinear(ctx,{t,dt:h,transient:true},x);
   x=ans.x;
+  points.push(result(ctx,ans,t,h));
   for(const c of ctx.c.components){
    if(c.type==="C")ctx.oldV.set(c.id,voltagePair(ctx,x,c.p,c.n));
    if(c.type==="L"){
@@ -219,7 +220,6 @@ function simulateTransient(raw,{stepS=1e-5,durationS=.005,initialVoltages={},max
     ctx.oldI.set(c.id,(ctx.oldI.get(c.id)||0)+h/c.value*v);
    }
   }
-  points.push(result(ctx,ans,t));
   prevTime=t;
  }
  return{points,stepS:dt,durationS:duration,method:"Backward Euler, fixed step, Newton-MNA",accuracy:"educational compact models; no tolerance/external device validation"};
