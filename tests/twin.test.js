@@ -1,5 +1,6 @@
 "use strict";
 const assert=require("node:assert/strict"),P=require("../pcb-core.js"),T=require("../twin-core.js"),S=require("../spice-export.js");
+const Coach=require("../tutor-core.js");
 const base=T.make();assert.equal(T.snapshot(base).ledOn,false);
 assert.equal(T.power(base,true).ok,false,"Safety precheck required");
 assert.equal(T.arm(base).ok,true);T.power(base,true);
@@ -35,6 +36,8 @@ const curve=T.oscilloscope(v,"VCC_PROTECTED");assert.equal(curve.length,128);ass
 const wrong=T.make(undefined,"fuse_open");T.arm(wrong);T.power(wrong,true);
 T.measure(wrong,"DCV","VIN_5V","GND");T.measure(wrong,"DCV","VCC_PROTECTED","GND");T.power(wrong,false);
 assert.equal(T.repair(wrong,"c1","replace_smd").ok,false);
+const known=T.make();T.arm(known);T.power(known,true);assert.equal(T.verify(known).ok,true,"Healthy reference should pass QA without invented repair");
+assert.ok(Coach.hint(known,T.snapshot(known)).includes("Start by recording"));
 const deck=S.makeNetlist(P.routedExample());assert.ok(deck.includes("RF1 VIN_5V VCC_PROTECTED")&&deck.includes(".print op"));
 assert.throws(()=>S.makeNetlist(P.getTemplate("usb")),"Unsupported topology must fail closed");
 console.log("PASS: supply checks, real network-dependent measurements, 7 fault recoveries, physical copper, QA and SPICE text");
