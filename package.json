@@ -5,11 +5,12 @@
   "type": "commonjs",
   "description": "Offline PC/laptop repair, integrated PCB design, deterministic electronics and manufacturing learning labs",
   "scripts": {
-    "test": "node tests/twin.test.js && node tests/engineering.test.js",
-    "check": "node --check core.js && node --check advanced-core.js && node --check circuit-solver.js && node --check pcb-core.js && node --check pcb-studio.js && node --check twin-core.js && node --check twin-ui.js && node --check spice-export.js && node --check tutor-core.js && node --check factory-core.js && node --check embedded-core.js && node --check signal-core.js && node --check rework-core.js && node --check engineering-ui.js && node tests/twin.test.js && node tests/engineering.test.js",
+    "test": "node tests/twin.test.js && node tests/engineering.test.js && node tests/server.test.js",
+    "check": "node --check core.js && node --check advanced-core.js && node --check circuit-solver.js && node --check pcb-core.js && node --check pcb-studio.js && node --check twin-core.js && node --check twin-ui.js && node --check spice-export.js && node --check tutor-core.js && node --check factory-core.js && node --check embedded-core.js && node --check signal-core.js && node --check rework-core.js && node --check engineering-ui.js && node tests/twin.test.js && node --check server.js && node tests/engineering.test.js && node tests/server.test.js",
     "export": "node tools/eda-cli.mjs --export",
     "spice": "node tools/eda-cli.mjs --ngspice",
-    "drc": "node tools/eda-cli.mjs --kicad"
+    "drc": "node tools/eda-cli.mjs --kicad",
+    "serve": "node server.js"
   },
   "engines": {
     "node": ">=18"
