@@ -98,7 +98,7 @@ $("rwPhase").textContent=rework.padTempC>R.ALLOYS[rework.alloy].liquidusC?"ABOVE
 $("rwAssembly").textContent=rework.replaced?"Replacement placed":rework.removed?"Old component removed":"Original component installed";
 $("rwComponent").textContent=rework.part.split("_")[0].toUpperCase();$("rwComponent").style.opacity=rework.removed&&!rework.replaced?".4":"1";
 const inspection=R.inspect(rework);
-$("rwChecklist").innerHTML=(inspection.reasons.length?inspection.reasons.map(x=>'<div class="issue review">'+esc(x)+'</div>'):'<div class="issue">Checks pass in the illustrative model. Physical microscope qualification still required.</div>');
+$("rwChecklist").innerHTML=(inspection.reasons.length?inspection.reasons.map(x=>'<div class="issue review">'+esc(x)+'</div>').join(''):'<div class="issue">Checks pass in the illustrative model. Physical microscope qualification still required.</div>');
 $("rwLog").textContent=rework.actions.slice(-16).join("\n")||"No actions yet.";
 $("rwMessage").textContent=message||("Modeled board temp "+fmt(rework.boardTempC,1)+" °C. "+(rework.padLifted?"Pad damage threshold exceeded.":"Do not apply these virtual temperatures to real repairs."));
 const hist=[{timeS:0,padTempC:rework.ambientC},...rework.history];
