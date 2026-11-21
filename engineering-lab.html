@@ -2,7 +2,7 @@
 <meta name="theme-color" content="#071522"><title>BOARD//LAB 5 — Advanced Engineering Workshop</title><link rel="stylesheet" href="engineering.css"></head>
 <body><header class="topbar">
 <div class="logo">BOARD<span>//</span>LAB <small>ENGINEERING WORKSHOP V5</small></div>
-<nav aria-label="Engineering modules"><button data-tab="factory" class="chosen">PCB FACTORY</button><button data-tab="embedded">EMBEDDED LAB</button><button data-tab="signals">SIGNAL INTEGRITY</button><button data-tab="rework">MICROSOLDERING</button></nav>
+<nav aria-label="Engineering modules"><button data-tab="factory" class="chosen">PCB FACTORY</button><button data-tab="embedded">EMBEDDED LAB</button><button data-tab="signals">SIGNAL INTEGRITY</button><button data-tab="rework">MICROSOLDERING</button><button data-tab="assessment">PRACTICAL EXAMS</button></nav>
 <div class="navlinks"><a href="index.html">Repair workbench</a><a href="digital-twin.html">Design-to-repair twin</a></div>
 </header>
 <main class="outer"><div class="titlebar"><div><div class="eyebrow" id="currentStep">CAM, ASSEMBLY & RELEASE</div><h1 id="pageTitle">Virtual electronics manufacturing plant</h1><p id="pageSubtitle">Review the actual training PCB's copper, mounting, assembly documentation and revision gate.</p></div><span class="tag">FICTIONAL LOW-VOLTAGE TRAINER · NOT FAB RELEASE</span></div>
@@ -51,7 +51,16 @@
 <div class="metrics four"><div><strong id="rwPad">—</strong><small>Pad °C</small></div><div><strong id="rwLiquidus">—</strong><small>Liquidus °C</small></div><div><strong id="rwDwell">—</strong><small>Liquidus dwell (s)</small></div><div><strong id="rwHealth">—</strong><small>Pad health / 100</small></div></div>
 <div class="circuitLine"><span class="chip">PCB PADS</span><span class="wire"></span><span id="rwComponent" class="virtualPart">SMD</span><span class="small" id="rwAssembly">Original component installed</span></div><h3>Process and inspection results</h3><div id="rwMessage" class="notice">Choose parameters and apply a pulse while source is isolated.</div></article>
 <aside class="panel narrow"><h2>Microscope checklist</h2><div id="rwChecklist" class="stages"></div><h3>Action history</h3><pre id="rwLog" class="console trace">No rework performed.</pre></aside></div></section>
+<section id="tabAssessment" class="tab">
+<div class="columns"><aside class="panel narrow"><div class="eyebrow">Objective practice examinations</div><h2>Choose a technical scenario</h2>
+<label>Training case<select id="examCase"></select></label><div id="examBrief" class="notice"></div>
+<div class="btnstack"><button id="examOpen">OPEN RELEVANT LAB</button><button id="examGrade" class="primary">GRADE CURRENT SIMULATION</button><button id="examExport">EXPORT ALL TRAINING RESULTS</button><button id="examClear">RESET LOCAL PRACTICE HISTORY</button></div>
+<div class="disclaimer">Unproctored simulations with reproducible rubric checks. These are not professional credentials, certificates or real hardware safety qualification.</div>
+</aside>
+<article class="panel center"><div class="panelHeader"><div><div class="eyebrow">Evidence and rubric</div><h2 id="examTitle">Practical training assessment</h2></div><span class="tag" id="examResult">UNASSESSED</span></div>
+<div class="metrics four"><div><strong id="examScore">—</strong><small>Points achieved</small></div><div><strong id="examPassed">—</strong><small>Training threshold</small></div><div><strong id="examAttempts">0</strong><small>Local attempts</small></div><div><strong id="examTotal">9</strong><small>Exercises</small></div></div><h3>Evidence-based rubric</h3><div id="examChecks" class="stages"></div><div class="notice" id="examNotice">Open a lab, perform the specified actions, and return here for an objective assessment.</div></article>
+<aside class="panel narrow"><h2>Practice history</h2><div id="examHistory" class="scrollList"></div><h3>How results work</h3><p>Scores are calculated from existing board DRC results, the virtual MCU execution trace, waveform values, and thermal rework state—not from arbitrary success buttons. Progress is saved only to this browser until exported.</p><p class="tiny">Teacher and student accounts are available separately in the optional localhost Classroom Server.</p></aside></div></section>
 </main>
 <footer class="foot">BOARD//LAB 5 · Deterministic engineering teaching labs · Use manufacturer data, real EDA and physical validation for any manufacturable or safety-critical design.</footer>
-<script src="pcb-core.js"></script><script src="factory-core.js"></script><script src="embedded-core.js"></script><script src="signal-core.js"></script><script src="rework-core.js"></script><script src="engineering-ui.js"></script>
+<script src="pcb-core.js"></script><script src="factory-core.js"></script><script src="embedded-core.js"></script><script src="signal-core.js"></script><script src="rework-core.js"></script><script src="assessment-core.js"></script><script src="engineering-ui.js"></script>
 </body></html>
