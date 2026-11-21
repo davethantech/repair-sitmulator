@@ -11,7 +11,7 @@
 <label>Load reference example<select id="example"><option value="divider">Resistive voltage divider</option><option value="rc">RC transient step</option><option value="rl">RL current rise</option><option value="diode">Exponential diode clamp</option><option value="nmos">NMOS low-side power switch</option></select></label>
 <textarea id="circuitJson" spellcheck="false" aria-label="Editable JSON circuit netlist"></textarea>
 <div class="flexRow"><button id="loadExample">Load example</button><button id="runDc" class="primary">Solve DC</button><button id="runTransient" class="primary">Run transient</button></div>
-<div class="flexRow"><button id="exportSpec">Save circuit JSON</button><button id="exportWave">Save transient CSV</button></div>
+<div class="flexRow"><button id="exportSpec">Save circuit JSON</button><button id="exportWave">Save transient CSV</button><button id="exportSpice">Export ngspice deck</button></div>
 <label>Time step (seconds)<input id="dt" type="number" value=".00001" min=".000000001" step=".00001"></label>
 <label>Duration (seconds)<input id="duration" type="number" value=".005" min=".000000001" step=".001"></label>
 <div class="exportHint">No external code executes from the editor: inputs are parsed and validated as bounded JSON. A failed/singular/non-converging circuit reports an error instead of invented measurements. Transient method: fixed-step backward Euler.</div>
@@ -44,5 +44,5 @@
 </article><aside class="labp"><div class="eyebrow">Electrical & manufacturer rule findings</div><h2>ERC results</h2><div class="scroll" id="ercIssues"></div>
 <h3>Fabrication decision</h3><div class="noticeBad noteBox">RELEASE LOCKED. Passing this lesson does not replace a real schematic, exact supplier pinout, KiCad ERC/DRC and fabricator review.</div></aside></section>
 </main>
-<script src="simulation/mna-core.js"></script><script src="pcb-core.js"></script><script src="cad/erc-core.js"></script><script src="circuit-lab.js"></script>
+<script src="simulation/mna-core.js"></script><script src="pcb-core.js"></script><script src="cad/erc-core.js"></script><script src="simulation/export-spice.js"></script><script src="circuit-lab.js"></script>
 </body></html>
