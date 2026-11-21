@@ -6,7 +6,7 @@
   "description": "Offline PC/laptop repair + PCB design and deterministic digital-twin trainer",
   "scripts": {
     "test": "node tests/twin.test.js",
-    "check": "node --check core.js && node --check advanced-core.js && node --check circuit-solver.js && node --check pcb-core.js && node --check pcb-studio.js && node --check twin-core.js && node --check twin-ui.js && node --check spice-export.js && node tests/twin.test.js",
+    "check": "node --check core.js && node --check advanced-core.js && node --check circuit-solver.js && node --check pcb-core.js && node --check pcb-studio.js && node --check twin-core.js && node --check twin-ui.js && node --check spice-export.js && node --check tutor-core.js && node tests/twin.test.js",
     "export": "node tools/eda-cli.mjs --export",
     "spice": "node tools/eda-cli.mjs --ngspice",
     "drc": "node tools/eda-cli.mjs --kicad"
