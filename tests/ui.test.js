@@ -1,11 +1,11 @@
 "use strict";
 const assert=require("node:assert/strict"),vm=require("node:vm"),fs=require("node:fs"),path=require("node:path");
-const P=require("../pcb-core.js"),F=require("../factory-core.js"),M=require("../embedded-core.js"),S=require("../signal-core.js"),R=require("../rework-core.js");
+const P=require("../pcb-core.js"),F=require("../factory-core.js"),M=require("../embedded-core.js"),S=require("../signal-core.js"),R=require("../rework-core.js"),A=require("../assessment-core.js");
 const elements=new Map();
 const initial={boardPick:"routed",minDrill:".2",assemblyMargin:".25",panelCols:"2",panelRows:"2",panelGap:"3",panelRail:"8",programPick:"blink",mcuFault:"none",mcuSupply:"3.3",mcuAdc:"1.65",mcuTemp:"25",sigZ:"50",sigRs:"0",sigRl:"100",sigLength:"100",sigEr:"2.9",sigRise:".2",sigProbe:"load",rwPart:"capacitor_0805",rwAlloy:"SAC305",rwAir:"310",rwFlow:".7",rwDistance:"4",rwSeconds:"5"};
 const el=id=>({id,value:initial[id]||"",textContent:"",innerHTML:"",checked:false,style:{},dataset:{},classList:{toggle(){}},listeners:{},addEventListener(evt,fn){this.listeners[evt]=fn;},setAttribute(){},remove(){},click(){this.listeners.click?.();}});
 const doc={readyState:"complete",body:{appendChild(){}},getElementById(id){if(!elements.has(id))elements.set(id,el(id));return elements.get(id);},querySelectorAll(){return[];},createElement(tag){return el(tag);},addEventListener(){}};
-const context={document:doc,window:{BoardPCB:P,BoardFactory:F,BoardMCU:M,BoardSignals:S,BoardRework:R},localStorage:{getItem(){return null;}},URL:{createObjectURL(){return"blob:test";},revokeObjectURL(){}},Blob,setTimeout(){},console};
+const context={document:doc,window:{BoardPCB:P,BoardFactory:F,BoardMCU:M,BoardSignals:S,BoardRework:R,BoardAssessment:A},localStorage:{getItem(){return null;},setItem(){},removeItem(){}},URL:{createObjectURL(){return"blob:test";},revokeObjectURL(){}},Blob,setTimeout(){},console};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,"..","engineering-ui.js"),"utf8"),context,{filename:"engineering-ui.js",timeout:3000});
 function html(id){return String(doc.getElementById(id).innerHTML);}
 function click(id){const x=doc.getElementById(id);assert.ok(x.listeners.click,"Missing click listener: "+id);x.click();}
@@ -14,6 +14,9 @@ assert.ok(html("factoryStages").includes("Schematic"));
 assert.ok(html("signalSvg").includes("polyline")||html("signalSvg").includes("<path"));
 assert.ok(html("mcuRegisters").includes("R0"));
 assert.ok(html("rwChecklist").includes("Component removal"));
+assert.ok(html("examCase").includes("factory_route"));
+assert.ok(html("examChecks").includes("Connectivity"));
+click("examGrade");assert.equal(doc.getElementById("examScore").textContent,"100/100");
 assert.equal(doc.getElementById("dfmErrors").textContent,0);
 click("runMcu");
 assert.match(doc.getElementById("mcuUart").textContent,/Blink completed/);
