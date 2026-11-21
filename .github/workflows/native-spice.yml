@@ -1,0 +1,30 @@
+name: Native ngspice cross-check
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'simulation/**'
+      - 'tools/circuit-verify.mjs'
+      - '.github/workflows/native-spice.yml'
+jobs:
+  ngspice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install official Ubuntu ngspice package
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ngspice
+      - name: Generate and execute independent native SPICE run
+        run: npm run circuit:native
+      - name: Check native verification log was generated
+        run: |
+          test -s exports/circuit-v6/rc_tran.ngspice.log
+          grep -Ei 'transient|index|time' exports/circuit-v6/rc_tran.ngspice.log | head -20
+      - name: Store comparison artifacts for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: boardlab-native-ngspice-check
+          path: exports/circuit-v6/
