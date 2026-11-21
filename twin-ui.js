@@ -99,6 +99,7 @@ on("breakTrace","click",()=>{const x=state.board.tracks.find(t=>t.net==="LED_A")
 on("restoreTrace","click",()=>{const ref=K.routedExample().tracks.filter(t=>t.net==="LED_A"),old=state.board.tracks.filter(t=>t.net==="LED_A");if(old.length===0)state.board.tracks.push(...ref);state.verified=false;say("Training copper segment restored. Run DRC and new electrical measurements.");render();});
 on("inspectDesign","click",()=>{const x=K.check(state.board);say("Training DRC found "+x.errors+" errors and "+x.warnings+" warnings. "+x.percent+"% electrically joined. This is not KiCad/fabrication signoff.",!x.errors);render();});
 on("takeReading","click",read);
+on("coach","click",()=>say(window.BoardCoach.hint(state,T.snapshot(state))));
 on("submitDiagnosis","click",()=>{let p=$("diagnosis").value;if(!p)return say("Select a component or copper trace first.",false);if(state.evidence.length<2)return say("Take at least two measurements before diagnosing.",false);let x=T.diagnose(state,p);say(x.message,x.ok);render();});
 on("repair","click",()=>{let x=T.repair(state,$("repairPart").value,$("repairTool").value);say(x.message,x.ok);render();});
 on("qa","click",()=>{let x=T.verify(state);$("qaStatus").innerHTML='<div class="'+(x.ok?"good":"bad")+'">'+escape(x.message)+' Score: '+x.score+'/100.</div>';say(x.message,x.ok);render();if(x.ok){try{localStorage.setItem("boardlab.twin.lastReport.v4",JSON.stringify(T.learningReport(state)));}catch{}}});
