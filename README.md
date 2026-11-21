@@ -27,6 +27,7 @@ The engineering modules are client-side with no cloud account or external depend
 - **Embedded systems:** Tiny 4-register virtual instruction set, editable programs, labels/jumps, GPIO, PWM, 10-bit ADC, UART logging, mock I2C sensor, brownout/open-load/NACK faults, execution history and CSV export.
 - **Signal integrity:** Idealized traveling-wave and TDR-style visualization for lossless single-ended lines; characteristic impedance, driver/load terminations, dielectric constant, trace length, finite rise time, repeated echoes, CSV waveform.
 - **Thermal rework:** Energy-based lumped pad heating/cooling, solder liquidus dwell, component replacement, flux, modeled bridges and corrosion, pad damage and inspection rubrics. This is a training game, not real equipment guidance.
+- **Objective practical exams:** Nine reproducible training assessments grade real circuit/PCB state, MCU execution traces, signal reflections and rework outcomes with rubrics, local attempt history and JSON export. Scores are not professional credentials.
 - **Local classroom server:** Restores instructor/learner accounts, hashed passwords, role-limited assignments, unproctored practice grading and saved learning progress on localhost. Built-in Node libraries; NOT internet-facing production LMS.
 - **Regression & release:** Automated functional tests, security checks, GUI action tests and example fixtures under [examples/v5](examples/v5).
 
@@ -65,7 +66,7 @@ The exported SPICE netlist and KiCad board are restricted, **unverified teaching
 - [embedded-core.js](embedded-core.js): virtual MCU language and peripherals.
 - [signal-core.js](signal-core.js): analytic traveling-wave model.
 - [rework-core.js](rework-core.js): simplified thermal rework model and inspection.
-- [engineering-ui.js](engineering-ui.js), [engineering-lab.html](engineering-lab.html): integrated interactive engineering tools.
+- [engineering-ui.js](engineering-ui.js), [engineering-lab.html](engineering-lab.html), [assessment-core.js](assessment-core.js): interactive engineering tools and nine objective practice rubrics.
 - [server.js](server.js): optional local instructor/learner API.
 - [tests](tests): reproducible electrical, user-interface and classroom regression checks.
 - [docs/ENGINEERING_STATUS.md](docs/ENGINEERING_STATUS.md): verified scope, limitations and production acceptance requirements.
