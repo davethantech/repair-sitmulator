@@ -1,8 +1,20 @@
-# BOARD//LAB 5 — Repair, PCB engineering and virtual electronics lab
+# BOARD//LAB 6.0 — Interactive Hardware Engineering, PCB CAD & Repair Laboratory
 
-An offline-first professional-style **educational simulator** for PC and laptop repair, motherboard diagnosis, basic PCB CAD, electronics engineering, virtual instruments, firmware concepts and electronics manufacturing awareness.
+**A runnable, openly inspectable training system — now with general compact circuit physics, physically constrained 3D disassembly, schematic/PCB cross-checking, independent native ngspice export, and server-recomputed practical scoring.**
 
-> **Technical truth:** BOARD//LAB has real interactive state and deterministic models, but this is NOT a manufacturer-validated service platform, approved PCB manufacturing CAD, full ngspice clone, real CPU emulator, secure cloud LMS, or accredited repair qualification.
+## New in version 6
+
+- **[Nonlinear Circuit Laboratory](circuit-lab.html):** Edit a bounded JSON circuit with independent voltage/current sources, R/L/C, diodes and compact NMOS/PMOS. Compute DC operating points, time-domain node waveforms and branch currents. Errors on floating or nonconverging circuits are reported rather than disguised. Upload a documented measured-reference dataset to compare errors with declared tolerances.
+- **[3D Mechanical Disassembly](assembly-3d.html):** Rotate and inspect the fictional dimensional laptop, pick parts, disconnect connectors, remove all 23 modeled fasteners, renew thermal interface and perform guided teardown and full reassembly QA. Software three-axis renderer works without WebGL.
+- **[Schematic-to-PCB Electrical Rules](circuit-lab.html):** Check component pin numbers, net assignments, PCB pads, copper continuity, output conflicts and abstract footprints. Supplier validation and real KiCad ERC/DRC remain external.
+- **Server-side engineering practical grades:** Local classroom API recomputes actual circuit, PCB, embedded, signal and mechanical service actions instead of trusting a client-submitted numeric score.
+- **Native and calibration verification:** Run npm run circuit:verify, npm run circuit:native and npm run calibration:check. The latter ships a clearly identified synthetic self-check reference. GitHub Actions has a separate native ngspice execution workflow.
+
+Read the [V6 numerical, mechanical and validation guide](docs/V6_PHYSICS_AND_VALIDATION.md) for technical details and limits.
+
+**Do not mistake simulation for OEM approval:** all motherboard geometry, fastener torques and device data are fictional and educational. Exact vendor schematics, physical calibration, qualified fabrication libraries, real material physics, approved parts and independent safety testing remain prerequisites for production use.
+
+---
 
 ## Launch the simulator
 
@@ -11,6 +23,8 @@ An offline-first professional-style **educational simulator** for PC and laptop 
 | Main workbench | [index.html](index.html) | Procedural 3D repair environment, PC/laptop fault scenarios, tools, disassembly, firmware, rework, PCB Studio, lessons |
 | Connected digital twin | [digital-twin.html](digital-twin.html) | One shared 5 V LED board: schematic/PCB, power model, DMM, hidden fault diagnosis, repair, scope and QA |
 | Engineering workshop v5 | [engineering-lab.html](engineering-lab.html) | PCB factory DFM/assembly, virtual MCU/firmware, transmission-line signal integrity and thermal rework |
+| Circuit physics v6 | [circuit-lab.html](circuit-lab.html) | Nonlinear and transient circuit solver, PCB ERC, waveform and calibration comparison |
+| Mechanical 3D v6 | [assembly-3d.html](assembly-3d.html) | Interactive three-axis disassembly, fasteners, ZIF/battery/thermal and QA |
 | Original standalone | [standalone.html](standalone.html) | Main legacy simulator in one HTML file, offline; new labs require adjacent modules |
 
 To use, download repository ZIP and open the appropriate HTML file in a modern browser. For browsers that restrict file-origin scripts, run a local static web server, for example:
@@ -40,7 +54,7 @@ With Node.js 18+:
     npm test
     npm run check
 
-The GitHub Actions workflow runs these checks on commits.
+The GitHub Actions workflow runs these checks on commits. A separate native ngspice workflow also verifies the example exported deck with an installed actual ngspice binary.
 
 ## Local classroom mode
 
