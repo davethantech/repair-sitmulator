@@ -1,0 +1,40 @@
+"use strict";
+const assert=require("node:assert/strict"),P=require("../pcb-core.js"),T=require("../twin-core.js"),S=require("../spice-export.js");
+const base=T.make();assert.equal(T.snapshot(base).ledOn,false);
+assert.equal(T.power(base,true).ok,false,"Safety precheck required");
+assert.equal(T.arm(base).ok,true);T.power(base,true);
+let normal=T.snapshot(base);assert.equal(normal.ledOn,true);
+assert.ok(normal.sourceCurrent>.002&&normal.sourceCurrent<.005);assert.ok(Math.abs(normal.volts.VCC_PROTECTED-5)<.05);
+assert.equal(T.measure(base,"OHM","VCC_PROTECTED","GND").ok,false,"Live resistance is unsafe");
+assert.equal(T.measure(base,"DCV","VCC_PROTECTED","GND").ok,true);
+T.power(base,false);assert.ok(T.measure(base,"OHM","VCC_PROTECTED","GND").value>5000);
+for(const [fault,f] of Object.entries(T.FAULTS)){
+ if(fault==="healthy")continue;
+ let s=T.make(undefined,fault);T.arm(s);T.power(s,true);
+ let before=T.snapshot(s);
+ assert.equal(T.measure(s,"DCV","VIN_5V","GND").ok,true);
+ assert.equal(T.measure(s,"DCV","VCC_PROTECTED","GND").ok,true);
+ assert.equal(T.measure(s,"CONT","GND","VCC_PROTECTED").ok,false);
+ if(fault==="output_short"){assert.ok(before.currentLimited);assert.ok(before.sourceCurrent<=.800001);assert.ok(before.volts.VCC_PROTECTED<1);}
+ if(fault==="fuse_open")assert.ok(before.volts.VCC_PROTECTED<.001);
+ if(["led_open","resistor_open","return_open","trace_open"].includes(fault))assert.equal(before.ledOn,false);
+ T.power(s,false);const ohm=T.measure(s,"OHM","VCC_PROTECTED","GND");assert.ok(ohm.ok);
+ if(fault==="output_short")assert.ok(ohm.value<1);
+ assert.equal(T.diagnose(s,f.part).ok,true);
+ assert.equal(T.repair(s,f.part,f.tool).ok,true,"Repair "+fault);
+ T.power(s,true);assert.equal(T.verify(s).ok,true,"QA "+fault);
+ assert.equal(T.learningReport(s).verified,true);
+}
+const c=T.make();T.arm(c);T.power(c,true);const current=T.snapshot(c).sourceCurrent;
+c.board.tracks=c.board.tracks.filter(t=>t.net!=="LED_A");
+assert.ok(P.check(c.board).warnings>0);assert.equal(T.snapshot(c).ledOn,false);
+const v=T.make();T.arm(v);T.power(v,true);const start=T.snapshot(v).sourceCurrent;
+v.board.parts.find(p=>p.id==="r1").value="2200Ω";
+assert.ok(T.snapshot(v).sourceCurrent<start);
+const curve=T.oscilloscope(v,"VCC_PROTECTED");assert.equal(curve.length,128);assert.ok(curve[1].v>=curve[0].v);
+const wrong=T.make(undefined,"fuse_open");T.arm(wrong);T.power(wrong,true);
+T.measure(wrong,"DCV","VIN_5V","GND");T.measure(wrong,"DCV","VCC_PROTECTED","GND");T.power(wrong,false);
+assert.equal(T.repair(wrong,"c1","replace_smd").ok,false);
+const deck=S.makeNetlist(P.routedExample());assert.ok(deck.includes("RF1 VIN_5V VCC_PROTECTED")&&deck.includes(".print op"));
+assert.throws(()=>S.makeNetlist(P.getTemplate("usb")),"Unsupported topology must fail closed");
+console.log("PASS: supply checks, real network-dependent measurements, 7 fault recoveries, physical copper, QA and SPICE text");
