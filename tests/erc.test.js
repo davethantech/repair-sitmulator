@@ -1,0 +1,26 @@
+"use strict";
+const assert=require("node:assert/strict"),P=require("../pcb-core.js"),E=require("../cad/erc-core.js");
+const b=P.routedExample(),s=E.schematicFromPCB(b),r=E.check(s,b);
+assert.equal(s.schema,"boardlab.schematic.v1");assert.equal(r.errors,0);assert.equal(r.warnings,0);
+assert.equal(r.reviews,5,"Unverified MPNs must not be silently treated as production-ready");
+assert.equal(r.releaseApproved,false);assert.equal(r.connectedNetCount,4);
+const net=E.exportNetlist(s);
+assert.equal(net.nets.find(x=>x.name==="LED_A").members.length,2);
+assert.ok(net.nets.find(x=>x.name==="VIN_5V").members.includes("J1.1"));
+const mismatch=E.reviseNet(s,"R1","2","GND");
+let v=E.check(mismatch,b);assert.ok(v.errors>=1);assert.ok(v.issues.some(x=>x.code==="net_mismatch"));
+const shorted=E.reviseNet(E.schematicFromPCB(b),"R1","2","VCC_PROTECTED");
+v=E.check(shorted,b);assert.ok(v.issues.some(x=>x.code==="terminals_shorted"));
+const damaged=P.routedExample();damaged.tracks=damaged.tracks.filter(x=>x.net!=="LED_A");
+v=E.check(E.schematicFromPCB(damaged),damaged);assert.ok(v.pcbStatus.warnings>0);
+const concept=P.getTemplate("usb");
+v=E.check(E.schematicFromPCB(concept),concept);
+assert.ok(v.issues.some(x=>x.code==="nonfabricable_symbol"));
+assert.ok(v.errors>0);
+assert.throws(()=>E.validate({schema:"boardlab.schematic.v1",symbols:[{ref:"X",footprintType:"BAD",pins:[]}],sources:[]}),/Unknown training symbol/);
+assert.throws(()=>E.reviseNet(s,"R900","1","VCC"),/Cannot locate/);
+const other=E.schematicFromPCB(b);other.symbols[0].pins[0].electrical="power_out";other.symbols[1].pins[0].electrical="power_out";
+const clash=E.check(other,b);assert.ok(clash.issues.some(x=>x.code==="output_conflict"));
+const manufactured=E.schematicFromPCB(b);for(const sym of manufactured.symbols){sym.mpn="TRAINING-NOT-REAL";sym.pinoutVerified=true;}
+const checked=E.check(manufactured,b);assert.equal(checked.manufacturerVerified,true);assert.equal(checked.releaseApproved,false,"Even vendor-marked schematic requires native review");
+console.log("PASS v6: schematic/PCB pin consistency, open copper, output conflicts, conceptual footprints and release gates");
