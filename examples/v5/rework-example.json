@@ -1,0 +1,206 @@
+{
+  "title": "Controlled educational virtual rework",
+  "caseParameters": {
+    "part": "capacitor_0805",
+    "alloy": "SAC305",
+    "ambientC": 25
+  },
+  "inspection": {
+    "passed": true,
+    "reasons": [],
+    "score": 100,
+    "tempC": 28.232107963431243,
+    "padHealth": 100,
+    "liquidusC": 217,
+    "notes": "Qualitative educational model, not real solder-joint qualification."
+  },
+  "history": [
+    {
+      "timeS": 1,
+      "padTempC": 53.12,
+      "boardTempC": 25.05,
+      "padHealth": 100
+    },
+    {
+      "timeS": 2,
+      "padTempC": 77.76,
+      "boardTempC": 25.18,
+      "padHealth": 100
+    },
+    {
+      "timeS": 3,
+      "padTempC": 99.35,
+      "boardTempC": 25.38,
+      "padHealth": 100
+    },
+    {
+      "timeS": 4,
+      "padTempC": 118.27,
+      "boardTempC": 25.64,
+      "padHealth": 100
+    },
+    {
+      "timeS": 5,
+      "padTempC": 134.84,
+      "boardTempC": 25.95,
+      "padHealth": 100
+    },
+    {
+      "timeS": 6,
+      "padTempC": 149.36,
+      "boardTempC": 26.31,
+      "padHealth": 100
+    },
+    {
+      "timeS": 7,
+      "padTempC": 162.08,
+      "boardTempC": 26.72,
+      "padHealth": 100
+    },
+    {
+      "timeS": 8,
+      "padTempC": 173.23,
+      "boardTempC": 27.15,
+      "padHealth": 100
+    },
+    {
+      "timeS": 9,
+      "padTempC": 182.99,
+      "boardTempC": 27.62,
+      "padHealth": 100
+    },
+    {
+      "timeS": 10,
+      "padTempC": 191.55,
+      "boardTempC": 28.12,
+      "padHealth": 100
+    },
+    {
+      "timeS": 11,
+      "padTempC": 199.04,
+      "boardTempC": 28.63,
+      "padHealth": 100
+    },
+    {
+      "timeS": 12,
+      "padTempC": 205.61,
+      "boardTempC": 29.17,
+      "padHealth": 100
+    },
+    {
+      "timeS": 13,
+      "padTempC": 211.37,
+      "boardTempC": 29.72,
+      "padHealth": 100
+    },
+    {
+      "timeS": 14,
+      "padTempC": 216.41,
+      "boardTempC": 30.29,
+      "padHealth": 100
+    },
+    {
+      "timeS": 15,
+      "padTempC": 220.83,
+      "boardTempC": 30.86,
+      "padHealth": 100
+    },
+    {
+      "timeS": 16,
+      "padTempC": 224.7,
+      "boardTempC": 31.45,
+      "padHealth": 100
+    },
+    {
+      "timeS": 17,
+      "padTempC": 228.09,
+      "boardTempC": 32.05,
+      "padHealth": 100
+    },
+    {
+      "timeS": 18,
+      "padTempC": 231.06,
+      "boardTempC": 32.65,
+      "padHealth": 100
+    },
+    {
+      "timeS": 19,
+      "padTempC": 233.66,
+      "boardTempC": 33.26,
+      "padHealth": 100
+    },
+    {
+      "timeS": 20,
+      "padTempC": 235.94,
+      "boardTempC": 33.87,
+      "padHealth": 100
+    },
+    {
+      "timeS": 21,
+      "padTempC": 237.94,
+      "boardTempC": 34.49,
+      "padHealth": 100
+    },
+    {
+      "timeS": 22,
+      "padTempC": 239.69,
+      "boardTempC": 35.11,
+      "padHealth": 100
+    },
+    {
+      "timeS": 23,
+      "padTempC": 241.22,
+      "boardTempC": 35.73,
+      "padHealth": 100
+    },
+    {
+      "timeS": 24,
+      "padTempC": 242.57,
+      "boardTempC": 36.35,
+      "padHealth": 100
+    },
+    {
+      "timeS": 25,
+      "padTempC": 243.74,
+      "boardTempC": 36.98,
+      "padHealth": 100
+    },
+    {
+      "timeS": 85,
+      "padTempC": 28.23,
+      "boardTempC": 25.8,
+      "padHealth": 100
+    }
+  ],
+  "actions": [
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Removed modeled component",
+    "Placed compatible replacement",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Heat 1.00 s at virtual 310 °C and airflow 0.70",
+    "Cool 60 s"
+  ],
+  "limitation": "Teaching values must not be applied to physical equipment"
+}

@@ -1,0 +1,5 @@
+"Ref","Footprint","Center X (mm)","Center Y (mm)","Rotation (deg)","Side","Status"
+"F1","Fuse:Fuse_1206_3216Metric","29","24.46","0","Top","UNVERIFIED CENTROID"
+"C1","Capacitor_SMD:C_0805_2012Metric","45","34","0","Top","UNVERIFIED CENTROID"
+"R1","Resistor_SMD:R_0805_2012Metric","54","16","0","Top","UNVERIFIED CENTROID"
+"D1","LED_SMD:LED_0805_2012Metric","70","16","0","Top","UNVERIFIED CENTROID"

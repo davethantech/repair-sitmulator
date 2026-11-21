@@ -1,0 +1,13 @@
+node_modules/
+.boardlab-data/
+exports/
+*.log
+*.tmp
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.*
+!.env.example
+
+# Never commit student records or local server passwords.

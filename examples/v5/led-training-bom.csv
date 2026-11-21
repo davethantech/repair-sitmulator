@@ -1,0 +1,6 @@
+"Refs","Qty","Value / notes","Footprint","Supplier MPN","Verified"
+"J1","1","5V IN","Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical","NOT ASSIGNED","NO"
+"F1","1","Resettable fuse (select actual rating)","Fuse:Fuse_1206_3216Metric","NOT ASSIGNED","NO"
+"C1","1","10µF (select voltage/derating)","Capacitor_SMD:C_0805_2012Metric","NOT ASSIGNED","NO"
+"R1","1","1kΩ","Resistor_SMD:R_0805_2012Metric","NOT ASSIGNED","NO"
+"D1","1","Indicator LED","LED_SMD:LED_0805_2012Metric","NOT ASSIGNED","NO"

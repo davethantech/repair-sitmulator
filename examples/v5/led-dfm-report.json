@@ -1,0 +1,80 @@
+{
+  "board": "5V LED safety indicator — introductory PCB",
+  "boardSizeMm": [
+    84,
+    54
+  ],
+  "layers": 2,
+  "designRuleResults": {
+    "errors": 0,
+    "warnings": 0,
+    "connectivity": 100
+  },
+  "manufacturing": {
+    "componentCount": 4,
+    "throughHoleCount": 1,
+    "viaCount": 2,
+    "mountingHoles": 4,
+    "uniqueAssemblyLines": 4
+  },
+  "issues": [
+    {
+      "severity": "review",
+      "code": "unknown_ordering_value",
+      "detail": "F1 needs exact manufacturer part and verified pinout.",
+      "location": "F1",
+      "source": "Teaching fabrication review"
+    }
+  ],
+  "blockers": 0,
+  "reviews": 1,
+  "canRelease": false,
+  "releaseStatus": "TRAINING ONLY — NEVER A FABRICATION SIGNOFF",
+  "profile": {
+    "minDrill": 0.2,
+    "minMaskSliver": 0.1,
+    "assemblyMargin": 0.25
+  },
+  "steps": [
+    {
+      "key": "schematic",
+      "title": "Schematic & supplier validation",
+      "details": "Verify connector polarity, pin mapping, reference designators, ratings and manufacturer part numbers."
+    },
+    {
+      "key": "layout",
+      "title": "Routing & geometry",
+      "details": "Run training geometry checks; then check every rule with native KiCad DRC/ERC and real library models."
+    },
+    {
+      "key": "stackup",
+      "title": "Stackup & impedances",
+      "details": "Approve layer count, dielectric geometry, copper weight, controlled-impedance coupons and tolerances with the fabricator."
+    },
+    {
+      "key": "artwork",
+      "title": "Artwork generation",
+      "details": "Produce manufacturer-approved native CAD Gerber/ODB++/IPC-2581 and Excellon NC drill files."
+    },
+    {
+      "key": "drilling",
+      "title": "Drill, plating & lamination",
+      "details": "Confirm plated/non-plated holes, annular rings, aspect ratio, finish, solder mask and via processing."
+    },
+    {
+      "key": "assembly",
+      "title": "Assembly documentation",
+      "details": "Verify component polarity, centroid rotation, footprints, substitutions, stencil and reflow plan."
+    },
+    {
+      "key": "inspection",
+      "title": "Inspection & test",
+      "details": "Inspect solder joints and assembly orientation; run continuity, shorts, programming and functional tests."
+    },
+    {
+      "key": "release",
+      "title": "Release gate",
+      "details": "Sign off DFM/DFT, electrical test, BOM procurement and revision control before manufacturing."
+    }
+  ]
+}

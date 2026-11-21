@@ -1,0 +1,283 @@
+{
+  "schema": "boardlab.pcb.v1",
+  "title": "5V LED safety indicator — introductory PCB",
+  "width": 84,
+  "height": 54,
+  "layers": 2,
+  "stackup": {
+    "thickness": 1.6,
+    "er": 4.2,
+    "copper": 0.035,
+    "signalHeight": 0.18,
+    "plane": "GND",
+    "mask": true
+  },
+  "rules": {
+    "clearance": 0.25,
+    "minTrack": 0.25,
+    "edge": 0.5,
+    "viaDiameter": 0.65,
+    "viaDrill": 0.3
+  },
+  "parts": [
+    {
+      "id": "j1",
+      "type": "HEADER2",
+      "ref": "J1",
+      "value": "5V IN",
+      "x": 11,
+      "y": 27,
+      "angle": 0,
+      "nets": {
+        "1": "VIN_5V",
+        "2": "GND"
+      }
+    },
+    {
+      "id": "f1",
+      "type": "F1206",
+      "ref": "F1",
+      "value": "Resettable fuse (select actual rating)",
+      "x": 29,
+      "y": 24.46,
+      "angle": 0,
+      "nets": {
+        "1": "VIN_5V",
+        "2": "VCC_PROTECTED"
+      }
+    },
+    {
+      "id": "c1",
+      "type": "C0805",
+      "ref": "C1",
+      "value": "10µF (select voltage/derating)",
+      "x": 45,
+      "y": 34,
+      "angle": 0,
+      "nets": {
+        "1": "VCC_PROTECTED",
+        "2": "GND"
+      }
+    },
+    {
+      "id": "r1",
+      "type": "R0805",
+      "ref": "R1",
+      "value": "1kΩ",
+      "x": 54,
+      "y": 16,
+      "angle": 0,
+      "nets": {
+        "1": "VCC_PROTECTED",
+        "2": "LED_A"
+      }
+    },
+    {
+      "id": "d1",
+      "type": "LED0805",
+      "ref": "D1",
+      "value": "Indicator LED",
+      "x": 70,
+      "y": 16,
+      "angle": 0,
+      "nets": {
+        "1": "LED_A",
+        "2": "GND"
+      }
+    },
+    {
+      "id": "h1",
+      "type": "HOLE_M3",
+      "ref": "H1",
+      "value": "NPTH M3",
+      "x": 6,
+      "y": 6,
+      "angle": 0,
+      "nets": {}
+    },
+    {
+      "id": "h2",
+      "type": "HOLE_M3",
+      "ref": "H2",
+      "value": "NPTH M3",
+      "x": 78,
+      "y": 6,
+      "angle": 0,
+      "nets": {}
+    },
+    {
+      "id": "h3",
+      "type": "HOLE_M3",
+      "ref": "H3",
+      "value": "NPTH M3",
+      "x": 6,
+      "y": 48,
+      "angle": 0,
+      "nets": {}
+    },
+    {
+      "id": "h4",
+      "type": "HOLE_M3",
+      "ref": "H4",
+      "value": "NPTH M3",
+      "x": 78,
+      "y": 48,
+      "angle": 0,
+      "nets": {}
+    }
+  ],
+  "tracks": [
+    {
+      "id": "t1",
+      "net": "VIN_5V",
+      "layer": "F.Cu",
+      "width": 0.45,
+      "points": [
+        {
+          "x": 11,
+          "y": 24.46
+        },
+        {
+          "x": 27.15,
+          "y": 24.46
+        }
+      ]
+    },
+    {
+      "id": "t2",
+      "net": "VCC_PROTECTED",
+      "layer": "F.Cu",
+      "width": 0.45,
+      "points": [
+        {
+          "x": 30.85,
+          "y": 24.46
+        },
+        {
+          "x": 38,
+          "y": 24.46
+        },
+        {
+          "x": 43.85,
+          "y": 34
+        }
+      ]
+    },
+    {
+      "id": "t3",
+      "net": "VCC_PROTECTED",
+      "layer": "F.Cu",
+      "width": 0.4,
+      "points": [
+        {
+          "x": 43.85,
+          "y": 34
+        },
+        {
+          "x": 48,
+          "y": 30
+        },
+        {
+          "x": 52.85,
+          "y": 16
+        }
+      ]
+    },
+    {
+      "id": "t4",
+      "net": "LED_A",
+      "layer": "F.Cu",
+      "width": 0.3,
+      "points": [
+        {
+          "x": 55.15,
+          "y": 16
+        },
+        {
+          "x": 68.85,
+          "y": 16
+        }
+      ]
+    },
+    {
+      "id": "t5",
+      "net": "GND",
+      "layer": "F.Cu",
+      "width": 0.3,
+      "points": [
+        {
+          "x": 46.15,
+          "y": 34
+        },
+        {
+          "x": 47,
+          "y": 39
+        }
+      ]
+    },
+    {
+      "id": "t6",
+      "net": "GND",
+      "layer": "F.Cu",
+      "width": 0.3,
+      "points": [
+        {
+          "x": 71.15,
+          "y": 16
+        },
+        {
+          "x": 74,
+          "y": 21
+        }
+      ]
+    },
+    {
+      "id": "t7",
+      "net": "GND",
+      "layer": "B.Cu",
+      "width": 0.55,
+      "points": [
+        {
+          "x": 11,
+          "y": 29.54
+        },
+        {
+          "x": 19,
+          "y": 43
+        },
+        {
+          "x": 47,
+          "y": 39
+        },
+        {
+          "x": 74,
+          "y": 21
+        }
+      ]
+    }
+  ],
+  "vias": [
+    {
+      "id": "v1",
+      "x": 47,
+      "y": 39,
+      "net": "GND",
+      "diameter": 0.8,
+      "drill": 0.35
+    },
+    {
+      "id": "v2",
+      "x": 74,
+      "y": 21,
+      "net": "GND",
+      "diameter": 0.8,
+      "drill": 0.35
+    }
+  ],
+  "notes": [
+    "TRAINING ARTIFACT: not fabrication-approved. Verify exact footprints, datasheets and fab constraints in KiCad.",
+    "The input is a 5 V LOW-VOLTAGE TRAINER: do not apply mains. LED polarity and actual part pin numbers require datasheet verification.",
+    "Fully routed reference demonstrates top/bottom routing and GND vias. Re-check the board in KiCad before use: DRC in this simplified editor is not fab signoff."
+  ],
+  "rev": 1
+}

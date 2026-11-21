@@ -1,0 +1,43 @@
+{
+  "type": "TRAINING_PANEL_PLAN_NOT_CAM",
+  "rows": 2,
+  "cols": 2,
+  "board": "5V LED safety indicator — introductory PCB",
+  "widthMm": 187,
+  "heightMm": 127,
+  "railMm": 8,
+  "gapMm": 3,
+  "copies": 4,
+  "placements": [
+    {
+      "index": 1,
+      "x": 8,
+      "y": 8,
+      "rotation": 0
+    },
+    {
+      "index": 2,
+      "x": 95,
+      "y": 8,
+      "rotation": 0
+    },
+    {
+      "index": 3,
+      "x": 8,
+      "y": 65,
+      "rotation": 0
+    },
+    {
+      "index": 4,
+      "x": 95,
+      "y": 65,
+      "rotation": 0
+    }
+  ],
+  "reviewRequired": [
+    "Rails, break-away tabs, tooling holes and fiducials are not computed",
+    "V-score and milling strategies are not inferred",
+    "Approve panel with assembly house and fabricator"
+  ],
+  "fitsSmallPanel": true
+}
