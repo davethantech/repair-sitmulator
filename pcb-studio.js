@@ -180,6 +180,8 @@ $('pcbBoardSvg').addEventListener('dblclick',e=>{if(route){e.preventDefault();e.
 $('pcbActiveLayer').value='F.Cu';document.querySelectorAll('[data-pcb-view]').forEach(b=>b.onclick=()=>setView(b.dataset.pcbView));
 document.addEventListener('keydown',e=>{if(!active)return;if(e.key==='Escape'){route=null;armed=null;renderBoard();renderPalette()}if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoEdit():undoEdit()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redoEdit()}if(e.key==='Delete'&&selected){let {id,kind}=selected;commit(()=>{if(kind==='part')board.parts=board.parts.filter(p=>p.id!==id);if(kind==='trace')board.tracks=board.tracks.filter(t=>t.id!==id);if(kind==='via')board.vias=board.vias.filter(v=>v.id!==id)});selected=null;render()}});
 renderPalette();render();window.BoardLabPCB={getBoard:()=>src(),setBoard:b=>{board=K.validateImport(b);selected=null;route=null;saveLocal();render()},check:()=>K.check(board),selectTool:setTool,go:show,openView:setView,exportDesign};
+// Deep link from the guided PCB academy to the real editable layout editor.
+if(window.location&&window.location.hash==='#pcb')show();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
