@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071b26">
+<title>BOARD//LAB — Guided PCB Project Journey</title>
+<link rel="stylesheet" href="academy/pcb-journey.css"></head>
+<body>
+<header class="site-nav">
+ <a class="logo" href="index.html" aria-label="BOARDLAB main simulator">BOARD<span>//</span>LAB <small>PROJECT JOURNEY</small></a>
+ <nav aria-label="Workspace navigation"><a href="index.html#pcb">PCB Studio</a><a href="circuit-lab.html">Schematic/ERC</a><a href="engineering-lab.html">Factory Lab</a><a href="digital-twin.html">Repair Twin</a></nav>
+ <a class="external" href="https://app.pantech.ai/pcbdesign-gptaastra6-home-c3" target="_blank" rel="noopener noreferrer">Pantech PCB course <span aria-hidden="true">↗</span></a>
+</header>
+<main class="workspace">
+ <div class="hero"><div><div class="eyebrow">INDEPENDENT GUIDED DESIGN TRAINER · LOW-VOLTAGE EXAMPLES</div><h1>From first circuit idea to a documented PCB prototype</h1>
+ <p>Learn the full PCB-design journey through a connected training project. Explore the fundamentals, make engineering choices, measure actual design completeness and prepare a KiCad handoff.</p></div>
+ <div class="hero-status"><strong id="progressSummary">0/12</strong><span>workflow evidence gates</span><div class="progress-track"><div id="progressFill"></div></div></div>
+ </div>
+ <div class="workspace-grid">
+ <aside class="panel left" aria-label="PCB learning pathway">
+  <div class="eyebrow">Five-day learning track</div><h2>Engineering curriculum</h2>
+  <div id="dayNav" class="day-list"></div>
+  <section class="lesson"><div id="dayHeading"></div><p id="dayObjective"></p><div id="dayTasks"></div></section>
+  <div class="section-title"><h2>12 connected stages</h2><span id="stageDone">0 complete</span></div>
+  <div id="stageNav" class="stage-list"></div>
+ </aside>
+ <section class="center">
+  <div class="panel brief-card">
+   <div class="panel-header"><div><div class="eyebrow">01 / Planning assistant</div><h2>Describe the circuit you want to learn</h2></div><span class="small-tag">Rule-based guidance · No AI API</span></div>
+   <label for="idea">Engineering idea</label>
+   <textarea id="idea" rows="3" placeholder="Example: Design an isolated 5 V LED indicator board with input protection and test points."></textarea>
+   <div class="button-row"><button id="analyzeIdea" class="button primary">Analyze idea</button><button id="loadProposed" class="button">Load suggested trainer</button></div>
+   <div class="notice" id="ideaFeedback" role="status">The assistant matches supported example topologies. It cannot generate a real manufacturer-verified design from arbitrary text.</div>
+  </div>
+  <div class="panel">
+   <div class="panel-header"><div><div class="eyebrow">02 / Circuit and PCB specification</div><h2>Design brief & component calculations</h2></div><span class="small-tag">Editable parameters</span></div>
+   <div class="fields">
+    <label>Training project<select id="template"><option value="led">5 V LED indicator</option><option value="regulator">3.3 V sensor supply concept</option><option value="usb">USB-C 5 V sink concept</option></select></label>
+    <label>Project title<input id="projectTitle" type="text" maxlength="120" value="5 V safety-indicator board"></label>
+    <label>Source V <input id="supply" type="number" step=".1" min="1" max="24" value="5"></label>
+    <label>LED forward V <input id="forward" type="number" step=".1" min=".8" max="4.5" value="2"></label>
+    <label>Target LED current (mA)<input id="targetMa" type="number" step=".1" min=".1" max="40" value="3"></label>
+   </div>
+   <div class="button-row"><button class="button primary" id="loadTemplate">Load template as project</button><button class="button" id="runReview">Recalculate and check</button><button class="button" id="loadStudio">Import work from PCB Studio</button></div>
+   <div class="metrics">
+    <div><strong id="targetOhms">—</strong><span>Ideal resistance Ω</span></div>
+    <div><strong id="e12Ohms">—</strong><span>Nearest E12 Ω</span></div>
+    <div><strong id="ledMa">—</strong><span>Resulting LED mA</span></div>
+    <div><strong id="powerMw">—</strong><span>Resistor loss mW</span></div>
+   </div>
+   <p class="fine">LED current and resistor-power estimates assume a constant forward voltage. Vendor datasheets, tolerances, thermal derating, actual power limits and safety requirements must be checked.</p>
+  </div>
+  <div class="panel board-card">
+   <div class="panel-header"><div><div class="eyebrow">03 / Real editable training geometry</div><h2 id="boardHeading">PCB copper and component layout</h2></div><span class="small-tag" id="boardDimensions">84 × 54 mm</span></div>
+   <div class="board-container"><svg id="boardSvg" viewBox="-4 -4 92 62" role="img" aria-label="Training PCB, pads, traces, vias and component references"></svg></div>
+   <div class="legend"><span><i class="legend-power"></i> Power</span><span><i class="legend-return"></i> Return</span><span><i class="legend-signal"></i> Signal</span><span><i class="legend-component"></i> Pads</span></div>
+   <div class="metrics">
+    <div><strong id="connectionPct">—</strong><span>Connected copper</span></div>
+    <div><strong id="drcError">—</strong><span>DRC errors</span></div>
+    <div><strong id="ercError">—</strong><span>ERC errors</span></div>
+    <div><strong id="dfmBlockers">—</strong><span>DFM blockers</span></div>
+   </div>
+   <div id="partInfo" class="notice">Select a component or pad to inspect its net assignment.</div>
+   <div class="button-row"><button class="button primary" id="editPcb">Edit PCB layout in Studio</button><button class="button" id="downloadBoard">Download project JSON</button><button class="button" id="importBoard">Import saved project file</button><input hidden id="boardFile" type="file" accept=".json,application/json"></div>
+  </div>
+  <div class="panel">
+   <div class="panel-header"><div><div class="eyebrow">04 / Step-by-step evidence</div><h2 id="stageHeading">Current design stage</h2></div><span class="small-tag" id="stageStatus">Not checked</span></div>
+   <p id="stageHelp"></p><div id="stageEvidence" class="notice"></div>
+   <div class="button-row"><button class="button" id="prevStage">Previous step</button><button class="button primary" id="nextStage">Next step</button></div>
+  </div>
+ </section>
+ <aside class="panel right" aria-label="Engineering review and KiCad handoff">
+  <div class="eyebrow">05 / Independent engineering audit</div><h2>Engineering review</h2><div class="review-list" id="reviewList"></div>
+  <div class="notice caution"><strong>Manufacturing approval locked</strong><p>PCB Studio’s basic checks do not produce authorized Gerber files. Native KiCad ERC/DRC, exact part libraries, fabricator DFM, and real hardware verification remain mandatory.</p></div>
+  <h2>KiCad & fabrication handoff</h2><p class="fine">Export the training project and unverified documentation, then open native KiCad to inspect and regenerate all real fabrication files.</p>
+  <div class="download-list"><button class="button" data-download="bundle">Project handoff (JSON)</button><button class="button" data-download="kicad">Experimental KiCad PCB</button><button class="button" data-download="bom">Unverified BOM (CSV)</button><button class="button" data-download="pick">Placement centroids (CSV)</button><button class="button" data-download="drill">Drill summary (CSV)</button><button class="button" data-download="schematic">Schematic mapping (JSON)</button></div>
+  <h3>Native sign-off checklist</h3><div id="handoffChecks" class="handoff-list"></div>
+  <div class="external-callout"><div class="eyebrow">Optional third-party resource</div><strong>Pantech.ai · AI-assisted PCB/KiCad workshop</strong>
+    <p>External training course. BOARD//LAB is independent and does not provide access to Pantech recordings, enrollment, certificates, or GPT-6 Astra automation.</p>
+    <a href="https://app.pantech.ai/pcbdesign-gptaastra6-home-c3" target="_blank" rel="noopener noreferrer">Open Pantech.ai workshop ↗</a>
+  </div>
+ </aside>
+ </div>
+ <div class="footer">BOARD//LAB original PCB learning workspace · Offline educational engine · No product affiliation with Pantech.ai, OpenAI or KiCad · Real board fabrication needs independent sign-off.</div>
+</main>
+<script src="pcb-core.js"></script><script src="cad/erc-core.js"></script><script src="factory-core.js"></script><script src="academy/pcb-journey-core.js"></script><script src="academy/pcb-journey-ui.js"></script>
+</body></html>
