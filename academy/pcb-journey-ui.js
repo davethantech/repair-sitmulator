@@ -53,7 +53,7 @@ function selectKind(kind){
  board=J.template(project);
  result=J.review(board,project);day=0;stage=0;
  render();store();
- notice("Loaded "+J.KIND[kind].label+". This is an educational starter layout; vendor components are not certified.","false"=== "true");
+ notice("Loaded "+J.KIND[kind].label+". This is an educational starter layout; vendor components are not certified.",false);
 }
 function analyze(){
  safe(()=>{
