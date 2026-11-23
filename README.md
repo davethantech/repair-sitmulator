@@ -2,6 +2,19 @@
 
 **A runnable, openly inspectable training system — now with general compact circuit physics, physically constrained 3D disassembly, schematic/PCB cross-checking, independent native ngspice export, and server-recomputed practical scoring.**
 
+## New in version 6.1 — Guided PCB Project Journey
+
+Open **[pcb-journey.html](pcb-journey.html)** to practice an original, connected **five-day, 12-stage** project workflow from a circuit idea to native KiCad handoff. This addition responds to the linked [Pantech.ai AI-assisted KiCad PCB course](https://app.pantech.ai/pcbdesign-gptaastra6-home-c3). It is an independently implemented educational companion and external resource link — **not** Pantech's proprietary product, paid course content, GPT-6 Astra automation, an API integration, enrollment or certification.
+
+- Describe a simple isolated low-voltage circuit idea. The local **rule-based** assistant selects among three bounded training templates; it is not an AI language model.
+- Change voltage, LED forward voltage and target current; calculate theoretical resistor value, preferred E12 resistance, resulting current and power dissipation.
+- Follow five original thematic lessons across twelve evidence gates. Review actual board copper, pad/nets and ERC/DRC/DFM findings rather than clicking decorative checkmarks.
+- Open the same board in PCB Studio (index.html#pcb) for genuine placement/routing edits, then reload it for a new progress check.
+- Export board and schematic JSON, a **training-only experimental** KiCad PCB, unverified BOM/centroids/drill reports and an explicit manufacturing handoff checklist.
+- Keep **supplier BOM verification, Gerber generation and manufacturing release external**. The training tools never invent a fabrication signoff.
+
+Documentation: [Guided PCB academy implementation and boundaries](docs/PCB_JOURNEY_V61.md).
+
 ## New in version 6
 
 - **[Nonlinear Circuit Laboratory](circuit-lab.html):** Edit a bounded JSON circuit with independent voltage/current sources, R/L/C, diodes and compact NMOS/PMOS. Compute DC operating points, time-domain node waveforms and branch currents. Errors on floating or nonconverging circuits are reported rather than disguised. Upload a documented measured-reference dataset to compare errors with declared tolerances.
@@ -24,6 +37,7 @@ Read the [V6 numerical, mechanical and validation guide](docs/V6_PHYSICS_AND_VAL
 | Connected digital twin | [digital-twin.html](digital-twin.html) | One shared 5 V LED board: schematic/PCB, power model, DMM, hidden fault diagnosis, repair, scope and QA |
 | Engineering workshop v5 | [engineering-lab.html](engineering-lab.html) | PCB factory DFM/assembly, virtual MCU/firmware, transmission-line signal integrity and thermal rework |
 | Circuit physics v6 | [circuit-lab.html](circuit-lab.html) | Nonlinear and transient circuit solver, PCB ERC, waveform and calibration comparison |
+| Guided PCB journey v6.1 | [pcb-journey.html](pcb-journey.html) | Five-day curriculum, 12 evidence stages, original planning tools, editing and native KiCad handoff |
 | Mechanical 3D v6 | [assembly-3d.html](assembly-3d.html) | Interactive three-axis disassembly, fasteners, ZIF/battery/thermal and QA |
 | Original standalone | [standalone.html](standalone.html) | Main legacy simulator in one HTML file, offline; new labs require adjacent modules |
 
